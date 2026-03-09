@@ -1,4 +1,4 @@
-# 🚴 DevTrails — AI Parametric Income Insurance for Gig Workers
+#  DevTrails — AI Parametric Income Insurance for Gig Workers
 
 An **AI-powered parametric insurance platform** designed to protect food delivery partners (Swiggy, Zomato, Dunzo, Blinkit) from **income loss caused by environmental and civic disruptions**.
 
@@ -23,10 +23,10 @@ These workers earn **per delivery**, meaning their income depends on how many or
 
 However, external disruptions often prevent them from working:
 
-- 🌧 Heavy rain and flooding
-- 🔥 Extreme heat waves
-- 🌫 Severe air pollution
-- 🚫 Curfews and civic shutdowns
+-  Heavy rain and flooding
+-  Extreme heat waves
+-  Severe air pollution
+-  Curfews and civic shutdowns
 
 When such events occur, workers may lose **20–30% of their weekly income**.
 
@@ -34,7 +34,7 @@ Currently, there is **no automated income protection system** for gig workers ag
 
 ---
 
-# 🎯 Objective
+#  Objective
 
 Build an **AI-enabled parametric insurance system** that:
 
@@ -47,7 +47,7 @@ This ensures a **fast, transparent, and fair financial safety net** for delivery
 
 ---
 
-# 💡 Our Solution
+#  Our Solution
 
 DevTrails introduces a **Parametric Income Insurance Platform**.
 
@@ -70,7 +70,7 @@ No paperwork. No waiting.
 
 ---
 
-# ⚙️ Core Features
+#  Core Features
 
 | Feature | Description |
 |---|---|
@@ -83,7 +83,7 @@ No paperwork. No waiting.
 
 ---
 
-# 🧠 AI Components
+#  AI Components
 
 The platform integrates AI/ML models for:
 
@@ -156,7 +156,7 @@ Instant Payout Processed
 
 ---
 
-# 🏗 System Architecture
+#  System Architecture
 
 ```
               +---------------------+
@@ -195,7 +195,7 @@ Instant Payout Processed
 
 ---
 
-# 📊 Dashboards
+#  Dashboards
 
 ## Worker Dashboard
 
@@ -221,7 +221,7 @@ Insurers can monitor:
 
 ---
 
-# 🛠 Tech Stack
+# Tech Stack
 
 ## Frontend
 
@@ -258,7 +258,7 @@ Insurers can monitor:
 
 ---
 
-# 🌍 Cities Covered
+#  Cities Covered
 
 | City | Lat | Lon |
 |---|---|---|
@@ -286,7 +286,7 @@ Payouts scale depending on the **severity of the disruption event**.
 
 ---
 
-# 🚀 Setup Instructions
+#  Setup Instructions
 
 ### 1. Clone Repository
 
@@ -369,7 +369,7 @@ http://localhost:5173
 
 ---
 
-# 🔐 Security
+#  Security
 
 - JWT authentication
 - Password hashing with bcrypt
@@ -379,7 +379,7 @@ http://localhost:5173
 
 ---
 
-# 📅 Future Enhancements
+#  Future Enhancements
 
 - Integration with real delivery platforms
 - Real-time rider activity tracking
@@ -389,13 +389,11 @@ http://localhost:5173
 
 ---
 
-# 📜 License
+#  License
 
 MIT License
 
 ---
-
-# 🏆 Hackathon Submission
 
 Project built for **Guidewire DEVTrails Hackathon 2026**  
 Theme: **AI-Powered Parametric Insurance for Gig Workers**
