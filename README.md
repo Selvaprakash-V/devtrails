@@ -86,13 +86,11 @@ Active insurance policy: Yes
 
 For gig workers like Rahul, income is unpredictable and vulnerable to external disruptions.
 
-```
 On certain days, external disruptions severely affect delivery workers like Rahul.
 As a result, Rahul is forced to stop working and **loses a large portion of his expected income for the day**.
 
----
-
-## Disruption Impact Flow
+ Disruption Impact Flow
+```
 
 Heavy Rainfall
       │
@@ -109,8 +107,6 @@ Rahul Stops Deliveries
 Income Loss for the Day
 ```
 This chain reaction shows how **external disruptions directly affect gig worker income**.
-
-
 
 A disruption can significantly reduce Rahul's daily earnings.
 ```
