@@ -85,4 +85,66 @@ Active insurance policy: Yes
 **₹350 payout credited instantly**
 
 For gig workers like Rahul, income is unpredictable and vulnerable to external disruptions.
-DevTrails ensures that when the city slows down due to uncontrollable events, **their livelihood doesn't come to a complete halt.**
+
+```
+On certain days, external disruptions severely affect delivery workers like Rahul.
+As a result, Rahul is forced to stop working and **loses a large portion of his expected income for the day**.
+
+---
+
+## Disruption Impact Flow
+
+```
+Heavy Rainfall
+      │
+      ▼
+Flooded Roads
+      │
+      ▼
+Delivery Orders Drop
+      │
+      ▼
+Rahul Stops Deliveries
+      │
+      ▼
+Income Loss for the Day
+```
+
+This chain reaction shows how **external disruptions directly affect gig worker income**.
+
+---
+
+
+A disruption can significantly reduce Rahul's daily earnings.
+
+```
+Normal Day Earnings
+████████████████████  ₹800
+
+Rain Disruption Day
+█████████░░░░░░░░░░░  ₹350
+```
+
+
+22 | ███████████████████
+20 |
+15 |
+10 | ███████
+ 5 |
+ 0 |____________________
+     Normal     Rain Day
+```
+
+Even losing a few working hours can drastically reduce Rahul's income for that day.
+
+---
+
+Gig workers rely on **consistent daily deliveries** to earn a stable income.
+
+When unexpected disruptions occur:
+- Workers lose **valuable working hours**
+- Daily earnings drop sharply
+- Weekly income becomes unpredictable
+
+Unlike salaried jobs, gig workers have **no built-in financial protection** against such events.
+This is the gap that **DevTrails Parametric Insurance** aims to solve.
