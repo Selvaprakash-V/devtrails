@@ -112,11 +112,9 @@ Income Loss for the Day
 
 This chain reaction shows how **external disruptions directly affect gig worker income**.
 
----
 
 
 A disruption can significantly reduce Rahul's daily earnings.
-
 ```
 Normal Day Earnings
 ████████████████████  ₹800
@@ -125,7 +123,7 @@ Rain Disruption Day
 █████████░░░░░░░░░░░  ₹350
 ```
 
-
+```
 22 | ███████████████████
 20 |
 15 |
