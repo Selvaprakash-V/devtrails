@@ -8,7 +8,7 @@ The platform automatically detects disruptions such as heavy rain, extreme heat,
 
 ---
 
-# 📌 Problem Statement
+#  Problem Statement
 
 India's gig economy relies heavily on delivery workers from platforms such as:
 
