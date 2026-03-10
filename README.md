@@ -67,9 +67,7 @@ And for gig workers like Rahul, **lost hours mean lost income**.
 
 ---
 
-### 💡 Where DevTrails Helps
-
-The **Parametric Insurance Platform** acts as a safety net.
+Our **Parametric Insurance Platform** acts as a safety net.
 
 Instead of waiting for manual claims or paperwork, the system continuously monitors disruption signals such as:
 
