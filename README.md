@@ -94,7 +94,6 @@ As a result, Rahul is forced to stop working and **loses a large portion of his 
 
 ## Disruption Impact Flow
 
-```
 Heavy Rainfall
       │
       ▼
@@ -109,7 +108,6 @@ Rahul Stops Deliveries
       ▼
 Income Loss for the Day
 ```
-
 This chain reaction shows how **external disruptions directly affect gig worker income**.
 
 
@@ -122,7 +120,6 @@ Normal Day Earnings
 Rain Disruption Day
 █████████░░░░░░░░░░░  ₹350
 ```
-
 ```
 22 | ███████████████████
 20 |
