@@ -45,6 +45,11 @@ export default function OnboardingContainer() {
   const handleNext = () => {
     const isLast = state.currentStep === stepConfigs.length - 1
     if (isLast) {
+      try {
+        localStorage.setItem('devtrails_onboarding_complete', 'true')
+      } catch (e) {
+        // ignore storage errors
+      }
       navigate('/dashboard')
       return
     }

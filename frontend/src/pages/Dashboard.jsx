@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [weatherErr, setWeatherErr] = useState(null)
   const [geo, setGeo] = useState({ lat: null, lon: null })
   const [geoErr, setGeoErr] = useState(null)
+  const [autoClaimed, setAutoClaimed] = useState(false)
 
   async function load() {
     setErr(null)
@@ -62,6 +63,12 @@ export default function Dashboard() {
         feels: Math.round(data.main.feels_like),
         desc: data.weather?.[0]?.description,
         icon: data.weather?.[0]?.icon,
+        main: data.weather?.[0]?.main,
+      })
+      checkWeatherForClaims({
+        temp: data.main.temp,
+        main: data.weather?.[0]?.main,
+        desc: data.weather?.[0]?.description,
       })
     } catch (e) {
       setWeatherErr(e.message || 'Weather unavailable')
@@ -79,9 +86,35 @@ export default function Dashboard() {
         feels: Math.round(data.main.feels_like),
         desc: data.weather?.[0]?.description,
         icon: data.weather?.[0]?.icon,
+        main: data.weather?.[0]?.main,
+      })
+      checkWeatherForClaims({
+        temp: data.main.temp,
+        main: data.weather?.[0]?.main,
+        desc: data.weather?.[0]?.description,
       })
     } catch (e) {
       setWeatherErr(e.message || 'Weather unavailable')
+    }
+  }
+
+  function isSevereWeather({ temp, main, desc }) {
+    const hot = temp >= 38
+    const rainy = /rain|storm|thunder/i.test(desc || '') || /Rain|Thunderstorm|Drizzle/i.test(main || '')
+    return hot || rainy
+  }
+
+  async function checkWeatherForClaims(payload) {
+    if (!user || autoClaimed) return
+    if (!isSevereWeather(payload)) return
+    try {
+      setAutoClaimed(true)
+      const res = await triggerRain(user.id)
+      setUser(res.data.user)
+      localStorage.setItem('devtrails_user', JSON.stringify(res.data.user))
+      setMessage(res.data.message || 'Automatic claim initiated due to severe weather')
+    } catch (e) {
+      setMessage('Attempted auto-claim but failed to submit')
     }
   }
 
@@ -186,16 +219,12 @@ export default function Dashboard() {
             <div>
               <div className="text-xs text-slate-500">Total payout received</div>
               <div className="text-2xl font-bold text-emerald-300">₹{user.totalPayout || 0}</div>
+              <div className="text-xs text-slate-500 mt-2">Auto-claim triggers</div>
+              <div className="text-sm text-slate-200">Rain storms or temp ≥ 38°C</div>
             </div>
-            <div>
-              <motion.button
-                whileTap={!triggering ? { scale: 0.92 } : {}}
-                onClick={handleRain}
-                disabled={triggering}
-                className="btn-primary px-4 py-2 disabled:opacity-70"
-              >
-                <span>{triggering ? 'Simulating weather…' : 'Simulate rain 🌧️'}</span>
-              </motion.button>
+            <div className="text-right text-xs text-slate-400">
+              <div>Plan: {user.plan || 'Not selected'}</div>
+              <div>Premium: ₹{user.weeklyPremium || 0} / week</div>
             </div>
           </div>
 
