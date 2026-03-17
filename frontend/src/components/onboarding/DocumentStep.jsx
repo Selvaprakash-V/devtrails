@@ -54,8 +54,7 @@ export default function DocumentStep({ onNext, onBack }) {
         primaryIdType: data.primaryIdType,
         primaryIdNumber: data.primaryIdNumber,
       })
-      alert('Onboarding completed successfully!')
-      // Optionally: redirect to dashboard or reset flow here
+      onNext()
     } catch (e) {
       setError(e.message || 'Failed to submit documents')
     } finally {

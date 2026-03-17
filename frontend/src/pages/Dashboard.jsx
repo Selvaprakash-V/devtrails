@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { getUser, triggerRain } from '../services/api'
+import { getUser, triggerRain, fetchWeatherByCity, fetchWeatherByCoords } from '../services/api'
 import PayoutHistory from '../components/PayoutHistory'
 import Loading from '../components/Loading'
 
@@ -10,6 +10,10 @@ export default function Dashboard() {
   const [err, setErr] = useState(null)
   const [triggering, setTriggering] = useState(false)
   const [message, setMessage] = useState(null)
+  const [weather, setWeather] = useState(null)
+  const [weatherErr, setWeatherErr] = useState(null)
+  const [geo, setGeo] = useState({ lat: null, lon: null })
+  const [geoErr, setGeoErr] = useState(null)
 
   async function load() {
     setErr(null)
@@ -19,11 +23,67 @@ export default function Dashboard() {
       const res = await getUser(stored.id)
       setUser(res.data)
       localStorage.setItem('devtrails_user', JSON.stringify(res.data))
+      // kick off weather fetch using user city
+      fetchWeather(res.data.city)
     } catch (e) { setErr('Failed to load user') }
     setLoading(false)
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    if (!('geolocation' in navigator)) {
+      setGeoErr('Geolocation not supported')
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords
+        setGeo({ lat: latitude, lon: longitude })
+        fetchWeatherByLocation({ lat: latitude, lon: longitude })
+      },
+      (err) => {
+        setGeoErr(err.message || 'Unable to get location')
+        // fallback to user city
+        if (user?.city) fetchWeather(user.city)
+      },
+      { enableHighAccuracy: false, timeout: 7000, maximumAge: 300000 }
+    )
+  }, [user?.city])
+
+  async function fetchWeather(city) {
+    if (!city) return
+    try {
+      setWeatherErr(null)
+      const data = await fetchWeatherByCity(city)
+      setWeather({
+        city: data.name,
+        temp: Math.round(data.main.temp),
+        feels: Math.round(data.main.feels_like),
+        desc: data.weather?.[0]?.description,
+        icon: data.weather?.[0]?.icon,
+      })
+    } catch (e) {
+      setWeatherErr(e.message || 'Weather unavailable')
+    }
+  }
+
+  async function fetchWeatherByLocation({ lat, lon }) {
+    if (lat == null || lon == null) return
+    try {
+      setWeatherErr(null)
+      const data = await fetchWeatherByCoords(lat, lon)
+      setWeather({
+        city: data.name,
+        temp: Math.round(data.main.temp),
+        feels: Math.round(data.main.feels_like),
+        desc: data.weather?.[0]?.description,
+        icon: data.weather?.[0]?.icon,
+      })
+    } catch (e) {
+      setWeatherErr(e.message || 'Weather unavailable')
+    }
+  }
 
   async function handleRain() {
     if (!user) return
@@ -61,6 +121,35 @@ export default function Dashboard() {
         <p className="text-sm text-slate-400 max-w-xl">
           Track your policy, simulate heavy rain, and view automatic payouts for past weather events.
         </p>
+      </motion.div>
+
+      <motion.div
+        variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
+        className="card-glass p-4 md:p-5 border border-slate-700/70 flex items-center justify-between"
+      >
+        <div>
+          <div className="text-xs text-slate-400">
+            Weather where you are {weather?.city ? `(${weather.city})` : ''}
+          </div>
+          {weather ? (
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-sky-300">{weather.temp}°C</div>
+              <div className="text-sm text-slate-300">Feels {weather.feels}°C · {weather.desc}</div>
+            </div>
+          ) : (
+            <div className="text-sm text-slate-400">{weatherErr || geoErr || 'Getting your location...'}</div>
+          )}
+          {geo.lat && geo.lon && (
+            <div className="text-xs text-slate-500 mt-1">lat {geo.lat.toFixed(3)}, lon {geo.lon.toFixed(3)}</div>
+          )}
+        </div>
+        {weather?.icon && (
+          <img
+            alt={weather.desc || 'weather'}
+            className="w-12 h-12"
+            src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+          />
+        )}
       </motion.div>
 
       <motion.div

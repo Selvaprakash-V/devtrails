@@ -5,6 +5,7 @@ const LS_USERS = 'devtrails_users'
 const LS_PLANS = 'devtrails_plans'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+const OPEN_WEATHER_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
 
 function load(key, fallback) {
   try {
@@ -232,4 +233,31 @@ export async function updateOnboardingDocuments({ primaryIdType, primaryIdNumber
       idNumber: primaryIdNumber,
     },
   })
+}
+
+// Weather
+export async function fetchWeatherByCity(city) {
+  if (!OPEN_WEATHER_KEY) throw new Error('OpenWeather API key missing')
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${OPEN_WEATHER_KEY}`
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    const message = data?.message || 'Failed to fetch weather'
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function fetchWeatherByCoords(lat, lon) {
+  if (!OPEN_WEATHER_KEY) throw new Error('OpenWeather API key missing')
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&units=metric&appid=${OPEN_WEATHER_KEY}`
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    const message = data?.message || 'Failed to fetch weather'
+    throw new Error(message)
+  }
+  return data
 }
