@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { updateOnboardingWorkSettings } from '../../services/api'
 
 const vehicleTypes = ['EV', 'Petrol', 'Bicycle']
 const workTimes = ['Morning', 'Afternoon', 'Night']
 
 export default function WorkSettingsStep({ onNext, onBack }) {
   const { state, updateField } = useOnboarding()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: {
@@ -18,11 +21,24 @@ export default function WorkSettingsStep({ onNext, onBack }) {
 
   const selectedTimes = watch('workTime') || []
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     updateField('workSettings', 'vehicleType', data.vehicleType)
     updateField('workSettings', 'workArea', data.workArea)
     updateField('workSettings', 'workTime', data.workTime)
-    onNext()
+    try {
+      setSaving(true)
+      setError('')
+      await updateOnboardingWorkSettings({
+        vehicleType: data.vehicleType,
+        workArea: data.workArea,
+        workTime: data.workTime || [],
+      })
+      onNext()
+    } catch (e) {
+      setError(e.message || 'Failed to save work settings')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -89,12 +105,15 @@ export default function WorkSettingsStep({ onNext, onBack }) {
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            disabled={saving}
+            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
           >
-            Next
+            {saving ? 'Saving...' : 'Next'}
           </button>
         </div>
       </form>
+
+      {error && <p className="text-red-400 text-xs text-center">{error}</p>}
     </div>
   )
 }

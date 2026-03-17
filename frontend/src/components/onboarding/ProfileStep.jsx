@@ -1,21 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { updateOnboardingProfile } from '../../services/api'
 
 const genders = ['Male', 'Female', 'Other', 'Prefer not to say']
 
 export default function ProfileStep({ onNext, onBack }) {
   const { state, updateField } = useOnboarding()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: state.profile
   })
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     updateField('profile', 'fullName', data.fullName)
     updateField('profile', 'age', data.age)
     updateField('profile', 'gender', data.gender)
-    onNext()
+    try {
+      setSaving(true)
+      setError('')
+      await updateOnboardingProfile({
+        fullName: data.fullName,
+        age: data.age,
+        gender: data.gender,
+      })
+      onNext()
+    } catch (e) {
+      setError(e.message || 'Failed to save profile')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -73,12 +89,15 @@ export default function ProfileStep({ onNext, onBack }) {
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            disabled={saving}
+            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
           >
-            Next
+            {saving ? 'Saving...' : 'Next'}
           </button>
         </div>
       </form>
+
+      {error && <p className="text-red-400 text-xs text-center">{error}</p>}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useOnboarding } from '../../contexts/OnboardingContext'
 import ProgressBar from './ProgressBar'
 import LanguageStep from './LanguageStep'
@@ -65,8 +66,19 @@ export default function OnboardingContainer() {
         <ProgressBar currentStep={state.currentStep} />
 
         <div className="flex-1 flex">
-          <div className="bg-slate-900/60 border border-slate-700/70 backdrop-blur-xl rounded-2xl p-5 shadow-xl w-full flex flex-col">
-            <CurrentStepComponent onNext={handleNext} onBack={handleBack} />
+          <div className="bg-slate-900/60 border border-slate-700/70 backdrop-blur-xl rounded-2xl p-5 shadow-xl w-full flex flex-col relative overflow-hidden">
+            <AnimatePresence mode="wait" custom={state.currentStep}>
+              <motion.div
+                key={state.currentStep}
+                initial={{ opacity: 0, x: 25, scale: 0.98 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -25, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                className="flex-1 flex flex-col w-full h-full"
+              >
+                <CurrentStepComponent onNext={handleNext} onBack={handleBack} />
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>

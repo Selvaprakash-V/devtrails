@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { sendOnboardingOtp, verifyOnboardingOtp } from '../../services/api'
 
 export default function AuthStep({ onNext, onBack }) {
   const { state, setPhone, setOtp: setOtpContext } = useOnboarding()
@@ -8,15 +9,13 @@ export default function AuthStep({ onNext, onBack }) {
   const [otp, setOtp] = useState('')
   const [timer, setTimer] = useState(0)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: { phone: state.phone }
   })
 
-  const sendOTP = async (phone) => {
-    // Simulate API call
-    console.log('Sending OTP to', phone)
-    setOtpSent(true)
+  const startTimer = () => {
     setTimer(30)
     const interval = setInterval(() => {
       setTimer((prev) => {
@@ -29,18 +28,41 @@ export default function AuthStep({ onNext, onBack }) {
     }, 1000)
   }
 
+  const sendOTP = async (phone) => {
+    try {
+      setLoading(true)
+      setError('')
+      const res = await sendOnboardingOtp(phone)
+      setOtpSent(true)
+      startTimer()
+
+      // Surface debug OTP in non-production environments for easier testing
+      if (res && res.debugOtp) {
+        console.info('Debug OTP:', res.debugOtp)
+      }
+    } catch (e) {
+      setError(e.message || 'Failed to send OTP')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const verifyOTP = async () => {
-    if (otp.length !== 4) {
-      setError('Please enter 4-digit OTP')
+    if (otp.length !== 6) {
+      setError('Please enter 6-digit OTP')
       return
     }
-    // Simulate verification
-    if (otp === '1234') { // Mock success
+    try {
+      setLoading(true)
+      setError('')
+      await verifyOnboardingOtp(state.phone, otp, state.language)
       setPhone(state.phone)
       setOtpContext(otp)
       onNext()
-    } else {
-      setError('Invalid OTP')
+    } catch (e) {
+      setError(e.message || 'Invalid OTP')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -77,8 +99,12 @@ export default function AuthStep({ onNext, onBack }) {
             {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
           </div>
 
-          <button type="submit" className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors">
-            Send OTP
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+          >
+            {loading ? 'Sending...' : 'Send OTP'}
           </button>
         </form>
       ) : (
@@ -88,18 +114,19 @@ export default function AuthStep({ onNext, onBack }) {
             <input
               type="text"
               value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 4))}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
               className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 text-center text-lg tracking-widest focus:border-sky-400 focus:outline-none"
-              placeholder="0000"
+              placeholder="000000"
             />
             {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
           </div>
 
           <button
             onClick={verifyOTP}
-            className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            disabled={loading}
+            className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
           >
-            Verify OTP
+            {loading ? 'Verifying...' : 'Verify OTP'}
           </button>
 
           <div className="text-center">
@@ -108,7 +135,8 @@ export default function AuthStep({ onNext, onBack }) {
             ) : (
               <button
                 onClick={() => sendOTP(state.phone)}
-                className="text-sm text-sky-400 hover:text-sky-300"
+                disabled={loading}
+                className="text-sm text-sky-400 hover:text-sky-300 disabled:opacity-60"
               >
                 Resend OTP
               </button>

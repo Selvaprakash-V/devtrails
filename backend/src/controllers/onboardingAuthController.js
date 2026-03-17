@@ -36,7 +36,7 @@ exports.sendOtp = async (req, res, next) => {
 // POST /api/auth/verify-otp
 exports.verifyOtp = async (req, res, next) => {
   try {
-    const { phone, otp } = req.body;
+    const { phone, otp, language } = req.body;
 
     const record = await OtpToken.findOne({ phone });
     if (!record) {
@@ -57,9 +57,16 @@ exports.verifyOtp = async (req, res, next) => {
 
     let user = await OnboardingUser.findOne({ phone });
     if (!user) {
-      user = await OnboardingUser.create({ phone, isVerified: true });
+      user = await OnboardingUser.create({
+        phone,
+        isVerified: true,
+        ...(language ? { language } : {}),
+      });
     } else {
       user.isVerified = true;
+      if (language) {
+        user.language = language;
+      }
       await user.save();
     }
 
