@@ -16,6 +16,13 @@ const pageVariants = {
 
 export default function App(){
   const location = useLocation()
+  const isOnboarded = (() => {
+    try {
+      return localStorage.getItem('devtrails_onboarding_complete') === 'true'
+    } catch (e) {
+      return false
+    }
+  })()
 
   return (
     <div className="min-h-screen text-gray-100 relative overflow-hidden">
@@ -35,7 +42,10 @@ export default function App(){
               className="page-shell"
             >
               <Routes location={location}>
-                <Route path="/" element={<Navigate to="/onboarding/language" replace />} />
+                <Route
+                  path="/"
+                  element={<Navigate to={isOnboarded ? "/dashboard" : "/onboarding/language"} replace />}
+                />
                 <Route path="/register" element={<Register/>} />
                 <Route path="/onboarding/*" element={<Onboarding/>} />
                 <Route path="/plans" element={<PlanSelection/>} />
