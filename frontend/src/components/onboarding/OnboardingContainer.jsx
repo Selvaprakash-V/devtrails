@@ -70,12 +70,12 @@ export default function OnboardingContainer() {
   const CurrentStepComponent = stepConfigs[state.currentStep].component
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 flex items-stretch">
-      <div className="w-full max-w-md mx-auto flex flex-col">
+    <div className="min-h-screen bg-[var(--bg-muted)] text-[var(--text)] p-4 flex items-stretch">
+      <div className="w-full max-w-md mx-auto flex flex-col gap-3">
         <ProgressBar currentStep={state.currentStep} />
 
         <div className="flex-1 flex">
-          <div className="bg-slate-900/60 border border-slate-700/70 backdrop-blur-xl rounded-2xl p-5 shadow-xl w-full flex flex-col relative overflow-hidden">
+          <div className="card-glass border border-[var(--border)] rounded-2xl p-5 shadow-xl w-full flex flex-col relative overflow-hidden">
             <AnimatePresence mode="wait" custom={state.currentStep}>
               <motion.div
                 key={state.currentStep}
