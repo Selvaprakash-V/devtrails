@@ -9,9 +9,9 @@ import Admin from './pages/Admin'
 import Onboarding from './pages/Onboarding'
 
 const pageVariants = {
-  initial: { opacity: 0, y: 16, scale: 0.99 },
-  animate: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, y: -10, scale: 0.99 },
+  initial: { opacity: 0, x: 15, scale: 0.98 },
+  animate: { opacity: 1, x: 0, scale: 1 },
+  exit: { opacity: 0, x: -15, scale: 0.98 },
 }
 
 export default function App(){

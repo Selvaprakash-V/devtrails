@@ -31,13 +31,14 @@ export default function PlanCard({ plan, onSelect, loading }) {
       </div>
 
       <div className="mt-4">
-        <button
+        <motion.button
+          whileTap={!loading ? { scale: 0.96 } : {}}
           onClick={() => onSelect(plan)}
           disabled={loading}
           className="btn-primary w-full disabled:opacity-70 disabled:cursor-not-allowed"
         >
           <span>{loading ? 'Selecting…' : 'Select this plan'}</span>
-        </button>
+        </motion.button>
       </div>
     </motion.div>
   )

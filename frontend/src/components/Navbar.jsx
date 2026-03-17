@@ -44,9 +44,8 @@ export default function Navbar() {
               <motion.div key={link.to} whileHover={{ y: -1 }} className="relative px-2 md:px-3 py-1">
                 <Link
                   to={link.to}
-                  className={`relative z-10 transition-colors duration-200 ${
-                    active ? 'text-sky-300' : 'text-slate-300 hover:text-sky-200'
-                  }`}
+                  className={`relative z-10 transition-colors duration-200 ${active ? 'text-sky-300' : 'text-slate-300 hover:text-sky-200'
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -63,14 +62,15 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-sky-200 transition-colors"
+          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-sky-200 transition-colors touch-manipulation"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
           </svg>
-        </button>
+        </motion.button>
       </div>
 
       {/* Mobile Menu */}
@@ -96,9 +96,8 @@ export default function Navbar() {
                     <Link
                       to={link.to}
                       onClick={() => setIsOpen(false)}
-                      className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                        active ? 'text-sky-300 bg-sky-500/15' : 'text-slate-300 hover:text-sky-200 hover:bg-slate-800/50'
-                      }`}
+                      className={`block px-3 py-2 rounded-lg text-sm transition-colors ${active ? 'text-sky-300 bg-sky-500/15' : 'text-slate-300 hover:text-sky-200 hover:bg-slate-800/50'
+                        }`}
                     >
                       {link.label}
                     </Link>

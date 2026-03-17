@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { updateOnboardingLocation } from '../../services/api'
 
 const cities = ['Chennai', 'Bangalore', 'Delhi', 'Mumbai', 'Hyderabad', 'Pune']
 
 export default function LocationStep({ onNext, onBack }) {
   const { state, updateField } = useOnboarding()
   const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: state.location
@@ -31,10 +34,24 @@ export default function LocationStep({ onNext, onBack }) {
     }
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     updateField('location', 'city', data.city)
     updateField('location', 'area', data.area)
-    onNext()
+    try {
+      setSaving(true)
+      setError('')
+      await updateOnboardingLocation({
+        city: data.city,
+        area: data.area,
+        lat: state.location.lat,
+        lng: state.location.lng,
+      })
+      onNext()
+    } catch (e) {
+      setError(e.message || 'Failed to save location')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -68,14 +85,14 @@ export default function LocationStep({ onNext, onBack }) {
           {errors.area && <p className="text-red-400 text-xs mt-1">{errors.area.message}</p>}
         </div>
 
-        <button
-          type="button"
-          onClick={getLocation}
-          disabled={loading}
-          className="w-full py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors disabled:opacity-50"
-        >
-          {loading ? 'Getting location...' : '📍 Use Live Location'}
-        </button>
+          <button
+            type="button"
+            onClick={getLocation}
+            disabled={loading || saving}
+            className="w-full py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Getting location...' : '📍 Use Live Location'}
+          </button>
 
         <div className="flex gap-3">
           <button
@@ -87,12 +104,15 @@ export default function LocationStep({ onNext, onBack }) {
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            disabled={saving}
+            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
           >
-            Next
+            {saving ? 'Saving...' : 'Next'}
           </button>
         </div>
       </form>
+
+      {error && <p className="text-red-400 text-xs text-center">{error}</p>}
     </div>
   )
 }

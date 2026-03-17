@@ -6,6 +6,8 @@ html,
 body,
 #root {
   height: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -45,6 +47,7 @@ body {
 
 .btn-primary {
   @apply relative inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition-all duration-300;
+  touch-action: manipulation;
 }
 
 .btn-primary::before {

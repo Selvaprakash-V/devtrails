@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { updateOnboardingDocuments } from '../../services/api'
 
 const primaryIdTypes = ['Aadhaar', 'Voter ID']
 
@@ -10,6 +11,8 @@ export default function DocumentStep({ onNext, onBack }) {
   const [panFile, setPanFile] = useState(state.document.panFile)
   const [licenseFile, setLicenseFile] = useState(state.document.licenseFile)
   const [fileErrors, setFileErrors] = useState({})
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: state.document
@@ -25,7 +28,7 @@ export default function DocumentStep({ onNext, onBack }) {
     setter(selectedFile)
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const errors = {}
     if (!primaryFile) errors.primaryFile = 'Primary ID document is required'
     if (!panFile) errors.panFile = 'PAN document is required'
@@ -44,25 +47,20 @@ export default function DocumentStep({ onNext, onBack }) {
     updateField('document', 'licenseNumber', data.licenseNumber)
     updateField('document', 'licenseFile', licenseFile)
 
-    // TODO: Submit to backend / complete onboarding
-    console.log('Submitting onboarding data:', {
-      ...state,
-      document: {
-        ...state.document,
+    try {
+      setSaving(true)
+      setError('')
+      await updateOnboardingDocuments({
         primaryIdType: data.primaryIdType,
         primaryIdNumber: data.primaryIdNumber,
-        primaryIdFile: primaryFile,
-        panNumber: data.panNumber,
-        panFile,
-        licenseNumber: data.licenseNumber,
-        licenseFile,
-      },
-    })
-
-    setTimeout(() => {
+      })
       alert('Onboarding completed successfully!')
-      // Reset or redirect as needed
-    }, 800)
+      // Optionally: redirect to dashboard or reset flow here
+    } catch (e) {
+      setError(e.message || 'Failed to submit documents')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -164,12 +162,15 @@ export default function DocumentStep({ onNext, onBack }) {
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            disabled={saving}
+            className="flex-1 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60"
           >
-            Complete Onboarding
+            {saving ? 'Submitting...' : 'Complete Onboarding'}
           </button>
         </div>
       </form>
+
+      {error && <p className="text-red-400 text-xs text-center mt-2">{error}</p>}
     </div>
   )
 }

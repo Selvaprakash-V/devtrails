@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import { updateOnboardingBank } from '../../services/api'
 
 export default function BankStep({ onNext, onBack }) {
   const { state, updateField } = useOnboarding()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm({
     defaultValues: state.bank
@@ -12,12 +15,26 @@ export default function BankStep({ onNext, onBack }) {
   const accountNumber = watch('accountNumber')
   const confirmAccount = watch('confirmAccount')
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     updateField('bank', 'accountNumber', data.accountNumber)
     updateField('bank', 'confirmAccount', data.confirmAccount)
     updateField('bank', 'ifsc', data.ifsc)
     updateField('bank', 'bankName', data.bankName)
-    onNext()
+    try {
+      setSaving(true)
+      setError('')
+      await updateOnboardingBank({
+        accountNumber: data.accountNumber,
+        confirmAccount: data.confirmAccount,
+        ifsc: data.ifsc,
+        bankName: data.bankName,
+      })
+      onNext()
+    } catch (e) {
+      setError(e.message || 'Failed to save bank details')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -91,12 +108,15 @@ export default function BankStep({ onNext, onBack }) {
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            disabled={saving}
+            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
           >
-            Next
+            {saving ? 'Saving...' : 'Next'}
           </button>
         </div>
       </form>
+
+      {error && <p className="text-red-400 text-xs text-center">{error}</p>}
     </div>
   )
 }
