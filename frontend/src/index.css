@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-950 text-gray-100 antialiased;
+  background-image: radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.35), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(56, 189, 248, 0.35), transparent 55%);
+  background-color: #020617;
+}
+
+/* Subtle scroll & selection styling */
+::selection {
+  background: rgba(129, 140, 248, 0.4);
+  color: #f9fafb;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #4f46e5, #22d3ee);
+  border-radius: 9999px;
+}
+
+/* Page transition helpers */
+.page-shell {
+  @apply max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-8;
+}
+
+.card-glass {
+  @apply bg-slate-900/60 border border-slate-700/70 backdrop-blur-xl rounded-2xl shadow-xl;
+}
+
+.btn-primary {
+  @apply relative inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-medium text-white shadow-lg shadow-indigo-500/30 transition-all duration-300;
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background-image: linear-gradient(135deg, #4f46e5, #6366f1, #22d3ee);
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background-image: radial-gradient(circle at 0 0, rgba(248, 250, 252, 0.5), transparent 55%);
+  opacity: 0;
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.btn-primary span {
+  position: relative;
+  z-index: 10;
+}
+
+.btn-primary:hover::after {
+  opacity: 0.65;
+  transform: translate3d(4px, -4px, 0);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(79, 70, 229, 0.55);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.99);
+}
