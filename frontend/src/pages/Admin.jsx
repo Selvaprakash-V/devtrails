@@ -26,46 +26,46 @@ export default function Admin(){
       className="max-w-3xl mx-auto space-y-5"
     >
       <div>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-50">Admin insights</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-[var(--text)]">Admin insights</h2>
+        <p className="text-sm text-[var(--text-muted)] mt-1">
           High-level metrics across all riders and policies on DevTrails.
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <motion.div
-          className="card-glass p-4 border border-slate-700/70"
+          className="card-glass p-4 border border-[var(--border)]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="text-xs text-slate-400">Total users</div>
-          <div className="text-2xl font-semibold text-slate-50">{summary.totalUsers}</div>
+          <div className="text-xs text-[var(--text-muted)]">Total users</div>
+          <div className="text-2xl font-semibold text-[var(--text)]">{summary.totalUsers}</div>
         </motion.div>
         <motion.div
-          className="card-glass p-4 border border-slate-700/70"
+          className="card-glass p-4 border border-[var(--border)]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <div className="text-xs text-slate-400">Active policies</div>
-          <div className="text-2xl font-semibold text-emerald-300">{summary.activePolicies}</div>
+          <div className="text-xs text-[var(--text-muted)]">Active policies</div>
+          <div className="text-2xl font-semibold text-[var(--accent)]">{summary.activePolicies}</div>
         </motion.div>
         <motion.div
-          className="card-glass p-4 border border-slate-700/70"
+          className="card-glass p-4 border border-[var(--border)]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="text-xs text-slate-400">Total payout amount</div>
-          <div className="text-2xl font-semibold text-emerald-300">₹{summary.totalPayout}</div>
+          <div className="text-xs text-[var(--text-muted)]">Total payout amount</div>
+          <div className="text-2xl font-semibold text-[var(--text)]">₹{summary.totalPayout}</div>
         </motion.div>
         <motion.div
-          className="card-glass p-4 border border-slate-700/70"
+          className="card-glass p-4 border border-[var(--border)]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
         >
-          <div className="text-xs text-slate-400">Most affected city</div>
-          <div className="text-2xl font-semibold text-slate-50">{summary.mostAffected || '—'}</div>
+          <div className="text-xs text-[var(--text-muted)]">Most affected city</div>
+          <div className="text-2xl font-semibold text-[var(--text)]">{summary.mostAffected || '—'}</div>
         </motion.div>
       </div>
     </motion.div>

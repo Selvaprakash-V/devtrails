@@ -261,3 +261,29 @@ export async function fetchWeatherByCoords(lat, lon) {
   }
   return data
 }
+
+export async function fetchForecastByCoords(lat, lon) {
+  if (!OPEN_WEATHER_KEY) throw new Error('OpenWeather API key missing')
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&units=metric&appid=${OPEN_WEATHER_KEY}`
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    const message = data?.message || 'Failed to fetch forecast'
+    throw new Error(message)
+  }
+  return data
+}
+
+export async function fetchForecastByCity(city) {
+  if (!OPEN_WEATHER_KEY) throw new Error('OpenWeather API key missing')
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=${OPEN_WEATHER_KEY}`
+  )
+  const data = await res.json()
+  if (!res.ok) {
+    const message = data?.message || 'Failed to fetch forecast'
+    throw new Error(message)
+  }
+  return data
+}

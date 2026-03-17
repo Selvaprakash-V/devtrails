@@ -7,6 +7,7 @@ import PlanSelection from './pages/PlanSelection'
 import Dashboard from './pages/Dashboard'
 import Admin from './pages/Admin'
 import Onboarding from './pages/Onboarding'
+import Forecast from './pages/Forecast'
 
 const pageVariants = {
   initial: { opacity: 0, x: 15, scale: 0.98 },
@@ -25,9 +26,8 @@ export default function App(){
   })()
 
   return (
-    <div className="min-h-screen text-gray-100 relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-slate-900/40 to-cyan-400/10 animate-gradient-x" />
-      <div className="relative z-10 flex flex-col min-h-screen">
+    <div className="min-h-screen text-[var(--text)] bg-[var(--bg)]">
+      <div className="relative flex flex-col min-h-screen">
         {/* Hide navbar for full-screen mobile-style onboarding */}
         {!location.pathname.startsWith('/onboarding') && <Navbar />}
         <main className="flex-1 flex">
@@ -39,7 +39,7 @@ export default function App(){
               animate="animate"
               exit="exit"
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="page-shell"
+              className="page-shell w-full"
             >
               <Routes location={location}>
                 <Route
@@ -49,6 +49,7 @@ export default function App(){
                 <Route path="/register" element={<Register/>} />
                 <Route path="/onboarding/*" element={<Onboarding/>} />
                 <Route path="/plans" element={<PlanSelection/>} />
+                <Route path="/forecast" element={<Forecast/>} />
                 <Route path="/dashboard" element={<Dashboard/>} />
                 <Route path="/admin" element={<Admin/>} />
               </Routes>

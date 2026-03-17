@@ -150,30 +150,30 @@ export default function Dashboard() {
       className="space-y-6"
     >
       <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-1">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">Hi {user.name}, you are covered</h2>
-        <p className="text-sm text-slate-400 max-w-xl">
-          Track your policy, simulate heavy rain, and view automatic payouts for past weather events.
+        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--text)]">Hi {user.name}, you are covered</h2>
+        <p className="text-sm text-[var(--text-muted)] max-w-xl">
+          Track your policy, weather-linked payouts, and active protection.
         </p>
       </motion.div>
 
       <motion.div
         variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
-        className="card-glass p-4 md:p-5 border border-slate-700/70 flex items-center justify-between"
+        className="card-glass p-4 md:p-5 border border-[var(--border)] flex items-center justify-between"
       >
         <div>
-          <div className="text-xs text-slate-400">
+          <div className="text-xs text-[var(--text-muted)]">
             Weather where you are {weather?.city ? `(${weather.city})` : ''}
           </div>
           {weather ? (
             <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-sky-300">{weather.temp}°C</div>
-              <div className="text-sm text-slate-300">Feels {weather.feels}°C · {weather.desc}</div>
+              <div className="text-3xl font-bold text-[var(--accent)]">{weather.temp}°C</div>
+              <div className="text-sm text-[var(--text-muted)]">Feels {weather.feels}°C · {weather.desc}</div>
             </div>
           ) : (
-            <div className="text-sm text-slate-400">{weatherErr || geoErr || 'Getting your location...'}</div>
+            <div className="text-sm text-[var(--text-muted)]">{weatherErr || geoErr || 'Getting your location...'}</div>
           )}
           {geo.lat && geo.lon && (
-            <div className="text-xs text-slate-500 mt-1">lat {geo.lat.toFixed(3)}, lon {geo.lon.toFixed(3)}</div>
+            <div className="text-xs text-[var(--text-muted)] mt-1">lat {geo.lat.toFixed(3)}, lon {geo.lon.toFixed(3)}</div>
           )}
         </div>
         {weather?.icon && (
@@ -187,22 +187,22 @@ export default function Dashboard() {
 
       <motion.div
         variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
-        className="card-glass p-4 md:p-6 flex justify-between items-center border border-slate-700/70"
+        className="card-glass p-4 md:p-6 flex justify-between items-center border border-[var(--border)]"
       >
         <div>
-          <div className="text-xs text-slate-400">Name</div>
-          <div className="font-semibold text-lg text-slate-50">{user.name}</div>
-          <div className="text-xs text-slate-500 mt-3">City</div>
-          <div className="font-medium text-slate-100">{user.city}</div>
+          <div className="text-xs text-[var(--text-muted)]">Name</div>
+          <div className="font-semibold text-lg text-[var(--text)]">{user.name}</div>
+          <div className="text-xs text-[var(--text-muted)] mt-3">City</div>
+          <div className="font-medium text-[var(--text)]">{user.city}</div>
         </div>
         <div className="text-right">
-          <div className="text-xs text-slate-500">Selected plan</div>
-          <div className="font-semibold text-sky-300">{user.plan || '—'}</div>
-          <div className="text-xs text-slate-500 mt-3">Weekly premium</div>
-          <div className="font-medium text-slate-100">₹{user.weeklyPremium || 0}</div>
-          <div className="text-xs text-slate-500 mt-3">Policy status</div>
+          <div className="text-xs text-[var(--text-muted)]">Selected plan</div>
+          <div className="font-semibold text-[var(--accent)]">{user.plan || '—'}</div>
+          <div className="text-xs text-[var(--text-muted)] mt-3">Weekly premium</div>
+          <div className="font-medium text-[var(--text)]">₹{user.weeklyPremium || 0}</div>
+          <div className="text-xs text-[var(--text-muted)] mt-3">Policy status</div>
           <div
-            className={`font-semibold ${user.policyStatus === 'ACTIVE' ? 'text-emerald-300' : 'text-slate-400'
+            className={`font-semibold ${user.policyStatus === 'ACTIVE' ? 'text-emerald-600' : 'text-[var(--text-muted)]'
               }`}
           >
             {user.policyStatus}
@@ -212,34 +212,34 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <motion.div
-          className="card-glass p-4 md:p-6 border border-slate-700/70"
+          className="card-glass p-4 md:p-6 border border-[var(--border)]"
           variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs text-slate-500">Total payout received</div>
-              <div className="text-2xl font-bold text-emerald-300">₹{user.totalPayout || 0}</div>
-              <div className="text-xs text-slate-500 mt-2">Auto-claim triggers</div>
-              <div className="text-sm text-slate-200">Rain storms or temp ≥ 38°C</div>
+              <div className="text-xs text-[var(--text-muted)]">Total payout received</div>
+              <div className="text-2xl font-bold text-emerald-600">₹{user.totalPayout || 0}</div>
+              <div className="text-xs text-[var(--text-muted)] mt-2">Auto-claim triggers</div>
+              <div className="text-sm text-[var(--text)]">Rain storms or temp ≥ 38°C</div>
             </div>
-            <div className="text-right text-xs text-slate-400">
+            <div className="text-right text-xs text-[var(--text-muted)]">
               <div>Plan: {user.plan || 'Not selected'}</div>
               <div>Premium: ₹{user.weeklyPremium || 0} / week</div>
             </div>
           </div>
 
           {message && (
-            <div className="mt-4 px-3 py-2 rounded-lg bg-emerald-900/40 border border-emerald-500/40 text-sm text-emerald-100">
+            <div className="mt-4 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-700">
               {message}
             </div>
           )}
         </motion.div>
 
         <motion.div
-          className="card-glass p-4 md:p-6 border border-slate-700/70"
+          className="card-glass p-4 md:p-6 border border-[var(--border)]"
           variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
         >
-          <h3 className="font-semibold mb-3 text-slate-50">Payout history</h3>
+          <h3 className="font-semibold mb-3 text-[var(--text)]">Payout history</h3>
           <PayoutHistory history={user.payoutHistory} />
         </motion.div>
       </div>
