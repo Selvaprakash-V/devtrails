@@ -46,7 +46,7 @@ export default function PlanSelection(){
       className="space-y-6"
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">Choose your protection</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-50">Choose your protection</h2>
         <p className="text-sm text-slate-400 max-w-xl">
           Pick a plan that matches how often you are on the road. Payouts are triggered automatically when heavy rain hits your city.
         </p>

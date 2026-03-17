@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
   { to: '/', label: 'Register' },
@@ -11,6 +11,7 @@ const navLinks = [
 
 export default function Navbar() {
   const location = useLocation()
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <motion.nav
@@ -34,7 +35,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-xs md:text-sm">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-1 text-xs md:text-sm">
           {navLinks.map((link) => {
             const active = location.pathname === link.to
             return (
@@ -58,7 +60,54 @@ export default function Navbar() {
             )
           })}
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-sky-200 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+          </svg>
+        </button>
       </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden border-t border-slate-800/60 bg-slate-950/90 backdrop-blur-xl"
+          >
+            <div className="px-4 py-3 space-y-1">
+              {navLinks.map((link, index) => {
+                const active = location.pathname === link.to
+                return (
+                  <motion.div
+                    key={link.to}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <Link
+                      to={link.to}
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
+                        active ? 'text-sky-300 bg-sky-500/15' : 'text-slate-300 hover:text-sky-200 hover:bg-slate-800/50'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   )
 }

@@ -42,7 +42,7 @@ export default function Register() {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 card-glass p-6 border border-slate-700/70 shadow-glow"
+        className="space-y-4 card-glass p-4 md:p-6 border border-slate-700/70 shadow-glow"
       >
         <div>
           <label className="block text-xs font-medium mb-1 text-slate-300">Name</label>

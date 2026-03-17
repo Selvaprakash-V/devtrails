@@ -26,7 +26,7 @@ export default function Admin(){
       className="max-w-3xl mx-auto space-y-5"
     >
       <div>
-        <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">Admin insights</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-50">Admin insights</h2>
         <p className="text-sm text-slate-400 mt-1">
           High-level metrics across all riders and policies on DevTrails.
         </p>

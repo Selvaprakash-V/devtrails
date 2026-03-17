@@ -56,7 +56,7 @@ export default function Dashboard(){
         </p>
       </div>
 
-      <div className="card-glass p-6 flex justify-between items-center border border-slate-700/70">
+      <div className="card-glass p-4 md:p-6 flex justify-between items-center border border-slate-700/70">
         <div>
           <div className="text-xs text-slate-400">Name</div>
           <div className="font-semibold text-lg text-slate-50">{user.name}</div>
@@ -81,7 +81,7 @@ export default function Dashboard(){
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <motion.div
-          className="card-glass p-6 border border-slate-700/70"
+          className="card-glass p-4 md:p-6 border border-slate-700/70"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
@@ -110,7 +110,7 @@ export default function Dashboard(){
         </motion.div>
 
         <motion.div
-          className="card-glass p-6 border border-slate-700/70"
+          className="card-glass p-4 md:p-6 border border-slate-700/70"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
