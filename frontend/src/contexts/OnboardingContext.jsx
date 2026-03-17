@@ -12,7 +12,15 @@ const initialState = {
   earnings: { platform: '', dailyEarnings: '', workDays: 5 },
   profile: { fullName: '', age: '', gender: '' },
   bank: { accountNumber: '', confirmAccount: '', ifsc: '', bankName: '' },
-  document: { idType: '', idNumber: '', file: null }
+  document: {
+    primaryIdType: '',
+    primaryIdNumber: '',
+    primaryIdFile: null,
+    panNumber: '',
+    panFile: null,
+    licenseNumber: '',
+    licenseFile: null,
+  }
 }
 
 const STORAGE_KEY = 'devtrails_onboarding'

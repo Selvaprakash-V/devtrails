@@ -5,7 +5,6 @@ const steps = [
   'Phone',
   'Location',
   'Work',
-  'Earnings',
   'Profile',
   'Bank',
   'Documents'
