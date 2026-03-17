@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth',    require('./src/routes/auth'));
+app.use('/api/user',    require('./src/routes/user'));
 app.use('/api/worker',  require('./src/routes/worker'));
 app.use('/api/policy',  require('./src/routes/policy'));
 app.use('/api/claims',  require('./src/routes/claims'));
