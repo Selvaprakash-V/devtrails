@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { getUser, triggerRain, fetchWeatherByCity, fetchWeatherByCoords } from '../services/api'
+import { getUser, triggerRain, fetchWeatherByCity, fetchWeatherByCoords, fetchForecastByCoords, fetchForecastByCity, computeWeeklyEarnings, payWeeklyEarnings } from '../services/api'
 import PayoutHistory from '../components/PayoutHistory'
 import Loading from '../components/Loading'
+import CurrentWeather from '../components/CurrentWeather'
 
 export default function Dashboard() {
   const [user, setUser] = useState(null)
@@ -12,14 +13,34 @@ export default function Dashboard() {
   const [message, setMessage] = useState(null)
   const [weather, setWeather] = useState(null)
   const [weatherErr, setWeatherErr] = useState(null)
+  const [forecast, setForecast] = useState(null)
+  const [riskScore, setRiskScore] = useState(null)
   const [geo, setGeo] = useState({ lat: null, lon: null })
   const [geoErr, setGeoErr] = useState(null)
   const [autoClaimed, setAutoClaimed] = useState(false)
+  const [weeklyEarnings, setWeeklyEarnings] = useState(0)
+  const [lastWeekPaid, setLastWeekPaid] = useState(null)
 
   async function load() {
     setErr(null)
     const stored = JSON.parse(localStorage.getItem('devtrails_user') || 'null')
-    if (!stored) { setErr('No user found. Please register.'); setLoading(false); return }
+    if (!stored) {
+      // Allow dashboard (and weather) to render even if the
+      // demo registration flow hasn't been completed yet.
+      // Use a lightweight fallback profile instead of blocking.
+      setUser({
+        id: null,
+        name: 'Rider',
+        city: '',
+        plan: null,
+        weeklyPremium: 0,
+        policyStatus: 'INACTIVE',
+        totalPayout: 0,
+        payoutHistory: [],
+      })
+      setLoading(false)
+      return
+    }
     try {
       const res = await getUser(stored.id)
       setUser(res.data)
@@ -31,6 +52,10 @@ export default function Dashboard() {
   }
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    if (user) loadWeeklyEarnings(user.id)
+  }, [user?.id])
 
   useEffect(() => {
     if (!('geolocation' in navigator)) {
@@ -70,6 +95,22 @@ export default function Dashboard() {
         main: data.weather?.[0]?.main,
         desc: data.weather?.[0]?.description,
       })
+      // fetch forecast and compute risk
+      try {
+        const fc = await fetchForecastByCoords(lat, lon)
+        setForecast(fc)
+        setRiskScore(computeRiskFromForecast(fc, data))
+      } catch (e) {
+        // ignore
+      }
+      // fetch forecast and compute risk
+      try {
+        const fc = await fetchForecastByCity(data.name)
+        setForecast(fc)
+        setRiskScore(computeRiskFromForecast(fc, data))
+      } catch (e) {
+        // ignore forecast errors
+      }
     } catch (e) {
       setWeatherErr(e.message || 'Weather unavailable')
     }
@@ -102,6 +143,53 @@ export default function Dashboard() {
     const hot = temp >= 38
     const rainy = /rain|storm|thunder/i.test(desc || '') || /Rain|Thunderstorm|Drizzle/i.test(main || '')
     return hot || rainy
+  }
+
+  function startOfWeek(date = new Date()) {
+    const d = new Date(date)
+    const day = (d.getDay() + 6) % 7 // Monday = 0
+    d.setHours(0,0,0,0)
+    d.setDate(d.getDate() - day)
+    return d
+  }
+
+  function computeRiskFromForecast(forecastData, current) {
+    if (!forecastData || !forecastData.list) return 0
+    const slots = forecastData.list.slice(0, 8)
+    const rainSlots = slots.filter(s => {
+      const desc = (s.weather && s.weather[0] && s.weather[0].description) || ''
+      const hasRain = /rain|storm|drizzle|thunder/i.test(desc)
+      const hasRainVal = s.rain && (s.rain['3h'] || s.rain['1h'])
+      return hasRain || Boolean(hasRainVal)
+    }).length
+    const rainFactor = (rainSlots / slots.length) * 60
+    const temp = current?.main?.temp || (slots[0] && slots[0].main && slots[0].main.temp) || 0
+    const tempFactor = temp >= 38 ? 20 : temp >= 32 ? 8 : 0
+    const base = 10
+    let score = Math.round(Math.min(100, base + rainFactor + tempFactor))
+    return score
+  }
+
+  async function loadWeeklyEarnings(uid) {
+    try {
+      const res = await computeWeeklyEarnings(uid)
+      setWeeklyEarnings(res.data.earnings || 0)
+      setLastWeekPaid(res.data.since)
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  async function handleMarkWeekPaid() {
+    if (!user) return
+    try {
+      const res = await payWeeklyEarnings(user.id)
+      setUser(res.data.user)
+      setWeeklyEarnings(0)
+      setLastWeekPaid(res.data.user.lastWeekPaid)
+    } catch (e) {
+      // ignore
+    }
   }
 
   async function checkWeatherForClaims(payload) {
@@ -157,33 +245,34 @@ export default function Dashboard() {
       </motion.div>
 
       <motion.div
-        variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
-        className="card-glass p-4 md:p-5 border border-[var(--border)] flex items-center justify-between"
+        variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
+        className="card-glass p-4 md:p-6 border border-[var(--border)]"
       >
-        <div>
-          <div className="text-xs text-[var(--text-muted)]">
-            Weather where you are {weather?.city ? `(${weather.city})` : ''}
-          </div>
-          {weather ? (
-            <div className="flex items-baseline gap-2">
-              <div className="text-3xl font-bold text-[var(--accent)]">{weather.temp}°C</div>
-              <div className="text-sm text-[var(--text-muted)]">Feels {weather.feels}°C · {weather.desc}</div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-xs text-[var(--text-muted)]">Risk analysis</div>
+            <div className="mt-2 flex items-center gap-3">
+              <div className="text-2xl font-bold text-[var(--accent)]">{riskScore ?? '—'}</div>
+              <div className="w-full">
+                <div className="w-full bg-[var(--bg-muted)] rounded-full h-2">
+                  <div className="bg-[var(--accent)] h-2 rounded-full" style={{ width: `${riskScore || 0}%` }} />
+                </div>
+                <div className="text-xs text-[var(--text-muted)] mt-1">Estimated chance of weather affecting your work in next 24h</div>
+              </div>
             </div>
-          ) : (
-            <div className="text-sm text-[var(--text-muted)]">{weatherErr || geoErr || 'Getting your location...'}</div>
-          )}
-          {geo.lat && geo.lon && (
-            <div className="text-xs text-[var(--text-muted)] mt-1">lat {geo.lat.toFixed(3)}, lon {geo.lon.toFixed(3)}</div>
-          )}
+          </div>
+          <div className="text-right">
+            <div className="text-xs text-[var(--text-muted)]">Weekly earnings</div>
+            <div className="text-2xl font-semibold text-[var(--accent)]">₹{weeklyEarnings}</div>
+            <div className="text-xs text-[var(--text-muted)]">Since {new Date(lastWeekPaid || startOfWeek()).toLocaleDateString()}</div>
+            <div className="mt-3">
+              <button onClick={handleMarkWeekPaid} className="btn-primary px-3 py-2">Mark week paid</button>
+            </div>
+          </div>
         </div>
-        {weather?.icon && (
-          <img
-            alt={weather.desc || 'weather'}
-            className="w-12 h-12"
-            src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-          />
-        )}
       </motion.div>
+
+      <CurrentWeather />
 
       <motion.div
         variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}

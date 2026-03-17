@@ -135,6 +135,41 @@ export async function triggerRain(userId) {
   return delay({ data: { message: `₹${amount} credited due to heavy rain`, event, user } }, 800)
 }
 
+// Wallet / weekly payout helpers
+function startOfWeek(date = new Date()) {
+  // Monday as start
+  const d = new Date(date)
+  const day = (d.getDay() + 6) % 7 // make Monday=0
+  d.setHours(0,0,0,0)
+  d.setDate(d.getDate() - day)
+  return d
+}
+
+export async function computeWeeklyEarnings(userId) {
+  const users = load(LS_USERS, [])
+  const user = users.find(u => u.id === userId)
+  if (!user) return delay(Promise.reject(new Error('User not found')))
+  const since = user.lastWeekPaid ? new Date(user.lastWeekPaid) : startOfWeek()
+  const earnings = (user.payoutHistory || []).reduce((s, e) => {
+    const d = new Date(e.date || e.paidAt || e.datePaid || e.timestamp || e.date)
+    return d >= since ? s + (e.amount || 0) : s
+  }, 0)
+  return delay({ data: { earnings, since: since.toISOString() } }, 200)
+}
+
+export async function payWeeklyEarnings(userId) {
+  const users = load(LS_USERS, [])
+  const user = users.find(u => u.id === userId)
+  if (!user) return delay(Promise.reject(new Error('User not found')))
+  const { data } = await computeWeeklyEarnings(userId)
+  const amount = data.earnings || 0
+  user.lastWeekPaid = new Date().toISOString()
+  user.walletPaidHistory = user.walletPaidHistory || []
+  user.walletPaidHistory.unshift({ amount, paidAt: user.lastWeekPaid })
+  save(LS_USERS, users)
+  return delay({ data: { amount, user } }, 300)
+}
+
 export async function getSummary() {
   const users = load(LS_USERS, [])
   const totalUsers = users.length
@@ -235,7 +270,7 @@ export async function updateOnboardingDocuments({ primaryIdType, primaryIdNumber
   })
 }
 
-// Weather
+// Weather (direct OpenWeather)
 export async function fetchWeatherByCity(city) {
   if (!OPEN_WEATHER_KEY) throw new Error('OpenWeather API key missing')
   const res = await fetch(
@@ -286,4 +321,16 @@ export async function fetchForecastByCity(city) {
     throw new Error(message)
   }
   return data
+}
+
+// Weather via backend API (preferred when you want to hide API keys)
+export async function fetchCurrentWeatherFromApi(lat, lon) {
+  const params = new URLSearchParams({ lat: String(lat), lon: String(lon) })
+  const res = await fetch(`${API_BASE}/weather/current?${params.toString()}`)
+  const data = await res.json()
+  if (!res.ok || !data?.success) {
+    const message = data?.message || 'Failed to fetch weather from API'
+    throw new Error(message)
+  }
+  return data.data
 }
