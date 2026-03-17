@@ -43,11 +43,15 @@ export default function OnboardingContainer() {
   }, [location.pathname, navigate, setStep, state.currentStep])
 
   const handleNext = () => {
-    if (state.currentStep < stepConfigs.length - 1) {
-      const nextIndex = state.currentStep + 1
-      setStep(nextIndex)
-      navigate(`/onboarding/${stepConfigs[nextIndex].key}`)
+    const isLast = state.currentStep === stepConfigs.length - 1
+    if (isLast) {
+      navigate('/dashboard')
+      return
     }
+
+    const nextIndex = state.currentStep + 1
+    setStep(nextIndex)
+    navigate(`/onboarding/${stepConfigs[nextIndex].key}`)
   }
 
   const handleBack = () => {
