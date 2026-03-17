@@ -88,7 +88,7 @@ export default function Navbar() {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-lg text-slate-300 hover:text-sky-200 transition-colors touch-manipulation"
+          className="md:hidden p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors touch-manipulation"
         >
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />

@@ -202,7 +202,7 @@ export default function Dashboard() {
           <div className="font-medium text-[var(--text)]">₹{user.weeklyPremium || 0}</div>
           <div className="text-xs text-[var(--text-muted)] mt-3">Policy status</div>
           <div
-            className={`font-semibold ${user.policyStatus === 'ACTIVE' ? 'text-emerald-600' : 'text-[var(--text-muted)]'
+            className={`font-semibold ${user.policyStatus === 'ACTIVE' ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]'
               }`}
           >
             {user.policyStatus}
@@ -218,7 +218,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-xs text-[var(--text-muted)]">Total payout received</div>
-              <div className="text-2xl font-bold text-emerald-600">₹{user.totalPayout || 0}</div>
+              <div className="text-2xl font-bold text-[var(--accent)]">₹{user.totalPayout || 0}</div>
               <div className="text-xs text-[var(--text-muted)] mt-2">Auto-claim triggers</div>
               <div className="text-sm text-[var(--text)]">Rain storms or temp ≥ 38°C</div>
             </div>
@@ -229,7 +229,7 @@ export default function Dashboard() {
           </div>
 
           {message && (
-            <div className="mt-4 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-sm text-emerald-700">
+            <div className="mt-4 px-3 py-2 rounded-lg bg-[var(--accent-soft)] border border-[var(--accent)]/30 text-sm text-[var(--accent)]">
               {message}
             </div>
           )}

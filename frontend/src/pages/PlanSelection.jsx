@@ -46,13 +46,13 @@ export default function PlanSelection(){
       className="space-y-6"
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-50">Choose your protection</h2>
-        <p className="text-sm text-slate-400 max-w-xl">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-[var(--text)]">Choose your protection</h2>
+        <p className="text-sm text-[var(--text-muted)] max-w-xl">
           Pick a plan that matches how often you are on the road. Payouts are triggered automatically when heavy rain hits your city.
         </p>
       </div>
 
-      {err && <div className="text-sm text-rose-400 bg-rose-950/40 border border-rose-500/40 px-3 py-2 rounded-lg max-w-md">{err}</div>}
+      {err && <div className="text-sm text-[var(--accent)] bg-[var(--accent-soft)] border border-[var(--accent)]/30 px-3 py-2 rounded-lg max-w-md">{err}</div>}
 
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5"

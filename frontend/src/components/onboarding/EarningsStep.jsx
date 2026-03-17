@@ -21,16 +21,16 @@ export default function EarningsStep({ onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-slate-50 mb-2">Earnings & Platform</h2>
-        <p className="text-sm text-slate-400">Help us understand your income</p>
+        <h2 className="text-xl font-semibold text-[var(--text)] mb-2">Earnings & Platform</h2>
+        <p className="text-sm text-[var(--text-muted)]">Help us understand your income</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Platform</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Platform</label>
           <select
             {...register('platform', { required: 'Platform is required' })}
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           >
             <option value="">Select platform</option>
             {platforms.map(platform => <option key={platform} value={platform}>{platform}</option>)}
@@ -39,7 +39,7 @@ export default function EarningsStep({ onNext, onBack }) {
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Average Daily Earnings (₹)</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Average Daily Earnings (₹)</label>
           <input
             {...register('dailyEarnings', {
               required: 'Daily earnings is required',
@@ -47,14 +47,14 @@ export default function EarningsStep({ onNext, onBack }) {
               max: { value: 10000, message: 'Must be less than ₹10,000' }
             })}
             type="number"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter amount"
           />
           {errors.dailyEarnings && <p className="text-red-400 text-xs mt-1">{errors.dailyEarnings.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Work Days per Week</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Work Days per Week</label>
           <input
             {...register('workDays', {
               required: 'Work days is required',
@@ -64,7 +64,7 @@ export default function EarningsStep({ onNext, onBack }) {
             type="number"
             min="1"
             max="7"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           />
           {errors.workDays && <p className="text-red-400 text-xs mt-1">{errors.workDays.message}</p>}
         </div>
@@ -73,13 +73,13 @@ export default function EarningsStep({ onNext, onBack }) {
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 py-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+            className="flex-1 py-3 btn-secondary rounded-lg"
           >
             Back
           </button>
           <button
             type="submit"
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+            className="flex-1 py-3 btn-primary rounded-lg"
           >
             Next
           </button>
