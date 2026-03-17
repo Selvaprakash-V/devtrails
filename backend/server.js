@@ -32,10 +32,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth',    require('./src/routes/auth'));
 app.use('/api/user',    require('./src/routes/user'));
 app.use('/api/worker',  require('./src/routes/worker'));
-app.use('/api/policy',  require('./src/routes/policy'));
-app.use('/api/claims',  require('./src/routes/claims'));
-app.use('/api/admin',   require('./src/routes/admin'));
+app.use('/api/policy',      require('./src/routes/policy'));
+app.use('/api/claims',      require('./src/routes/claims'));
+app.use('/api/admin',       require('./src/routes/admin'));
 app.use('/api/disruptions', require('./src/routes/disruptions'));
+app.use('/api/weather',     require('./src/routes/weather'));
 
 // Health check
 app.get('/api/health', (req, res) =>

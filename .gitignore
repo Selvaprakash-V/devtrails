@@ -6,3 +6,6 @@ dist/
 __pycache__/
 *.pyc
 *.pkl
+/backend/.env
+/frontend/.env
+/backend/.env.example
