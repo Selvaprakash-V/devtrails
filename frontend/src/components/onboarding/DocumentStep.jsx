@@ -2,78 +2,156 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
 
-const idTypes = ['Aadhaar', 'PAN', 'Voter ID']
+const primaryIdTypes = ['Aadhaar', 'Voter ID']
 
 export default function DocumentStep({ onNext, onBack }) {
   const { state, updateField } = useOnboarding()
-  const [file, setFile] = useState(null)
+  const [primaryFile, setPrimaryFile] = useState(state.document.primaryIdFile)
+  const [panFile, setPanFile] = useState(state.document.panFile)
+  const [licenseFile, setLicenseFile] = useState(state.document.licenseFile)
+  const [fileErrors, setFileErrors] = useState({})
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: state.document
   })
 
-  const onSubmit = (data) => {
-    updateField('document', 'idType', data.idType)
-    updateField('document', 'idNumber', data.idNumber)
-    updateField('document', 'file', file)
-    // Submit to backend
-    console.log('Submitting onboarding data:', state)
-    // Simulate API call
-    setTimeout(() => {
-      alert('Onboarding completed successfully!')
-      // Reset or redirect
-    }, 1000)
-  }
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]
-    if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
+  const handleFileChange = (e, setter) => {
+    const selectedFile = e.target.files?.[0]
+    if (!selectedFile) return
+    if (selectedFile.size > 5 * 1024 * 1024) {
       alert('File size must be less than 5MB')
       return
     }
-    setFile(selectedFile)
+    setter(selectedFile)
+  }
+
+  const onSubmit = (data) => {
+    const errors = {}
+    if (!primaryFile) errors.primaryFile = 'Primary ID document is required'
+    if (!panFile) errors.panFile = 'PAN document is required'
+    if (!licenseFile) errors.licenseFile = 'License document is required'
+    if (Object.keys(errors).length) {
+      setFileErrors(errors)
+      return
+    }
+
+    setFileErrors({})
+    updateField('document', 'primaryIdType', data.primaryIdType)
+    updateField('document', 'primaryIdNumber', data.primaryIdNumber)
+    updateField('document', 'primaryIdFile', primaryFile)
+    updateField('document', 'panNumber', data.panNumber)
+    updateField('document', 'panFile', panFile)
+    updateField('document', 'licenseNumber', data.licenseNumber)
+    updateField('document', 'licenseFile', licenseFile)
+
+    // TODO: Submit to backend / complete onboarding
+    console.log('Submitting onboarding data:', {
+      ...state,
+      document: {
+        ...state.document,
+        primaryIdType: data.primaryIdType,
+        primaryIdNumber: data.primaryIdNumber,
+        primaryIdFile: primaryFile,
+        panNumber: data.panNumber,
+        panFile,
+        licenseNumber: data.licenseNumber,
+        licenseFile,
+      },
+    })
+
+    setTimeout(() => {
+      alert('Onboarding completed successfully!')
+      // Reset or redirect as needed
+    }, 800)
   }
 
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-slate-50 mb-2">Document verification</h2>
-        <p className="text-sm text-slate-400">Upload ID for verification</p>
+        <p className="text-sm text-slate-400">Upload required ID documents</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-slate-300 mb-1">ID Type</label>
+          <label className="block text-sm text-slate-300 mb-1">Primary ID (Aadhaar or Voter)</label>
           <select
-            {...register('idType', { required: 'ID type is required' })}
+            {...register('primaryIdType', { required: 'Primary ID type is required' })}
             className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
           >
             <option value="">Select ID type</option>
-            {idTypes.map(type => <option key={type} value={type}>{type}</option>)}
+            {primaryIdTypes.map(type => <option key={type} value={type}>{type}</option>)}
           </select>
-          {errors.idType && <p className="text-red-400 text-xs mt-1">{errors.idType.message}</p>}
+          {errors.primaryIdType && <p className="text-red-400 text-xs mt-1">{errors.primaryIdType.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">ID Number</label>
+          <label className="block text-sm text-slate-300 mb-1">Primary ID Number</label>
           <input
-            {...register('idNumber', { required: 'ID number is required' })}
+            {...register('primaryIdNumber', { required: 'Primary ID number is required' })}
             type="text"
             className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
-            placeholder="Enter ID number"
+            placeholder="Enter primary ID number"
           />
-          {errors.idNumber && <p className="text-red-400 text-xs mt-1">{errors.idNumber.message}</p>}
+          {errors.primaryIdNumber && <p className="text-red-400 text-xs mt-1">{errors.primaryIdNumber.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Upload Document (Optional)</label>
+          <label className="block text-sm text-slate-300 mb-1">Upload Primary ID document</label>
           <input
             type="file"
             accept="image/*,.pdf"
-            onChange={handleFileChange}
+            onChange={(e) => handleFileChange(e, setPrimaryFile)}
             className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-sky-600 file:text-white"
           />
-          {file && <p className="text-xs text-slate-400 mt-1">Selected: {file.name}</p>}
+          {!primaryFile && fileErrors.primaryFile && <p className="text-red-400 text-xs mt-1">{fileErrors.primaryFile}</p>}
+          {primaryFile && <p className="text-xs text-slate-400 mt-1">Selected: {primaryFile.name}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">PAN Number</label>
+          <input
+            {...register('panNumber', { required: 'PAN number is required' })}
+            type="text"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            placeholder="Enter PAN number"
+          />
+          {errors.panNumber && <p className="text-red-400 text-xs mt-1">{errors.panNumber.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Upload PAN document</label>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            onChange={(e) => handleFileChange(e, setPanFile)}
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-sky-600 file:text-white"
+          />
+          {!panFile && fileErrors.panFile && <p className="text-red-400 text-xs mt-1">{fileErrors.panFile}</p>}
+          {panFile && <p className="text-xs text-slate-400 mt-1">Selected: {panFile.name}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Driving License Number</label>
+          <input
+            {...register('licenseNumber', { required: 'License number is required' })}
+            type="text"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            placeholder="Enter license number"
+          />
+          {errors.licenseNumber && <p className="text-red-400 text-xs mt-1">{errors.licenseNumber.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Upload License document</label>
+          <input
+            type="file"
+            accept="image/*,.pdf"
+            onChange={(e) => handleFileChange(e, setLicenseFile)}
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-sky-600 file:text-white"
+          />
+          {!licenseFile && fileErrors.licenseFile && <p className="text-red-400 text-xs mt-1">{fileErrors.licenseFile}</p>}
+          {licenseFile && <p className="text-xs text-slate-400 mt-1">Selected: {licenseFile.name}</p>}
         </div>
 
         <div className="flex gap-3">

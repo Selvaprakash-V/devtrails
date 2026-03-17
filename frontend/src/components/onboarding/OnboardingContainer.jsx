@@ -6,7 +6,6 @@ import LanguageStep from './LanguageStep'
 import AuthStep from './AuthStep'
 import LocationStep from './LocationStep'
 import WorkSettingsStep from './WorkSettingsStep'
-import EarningsStep from './EarningsStep'
 import ProfileStep from './ProfileStep'
 import BankStep from './BankStep'
 import DocumentStep from './DocumentStep'
@@ -16,7 +15,6 @@ const stepConfigs = [
   { key: 'phone', component: AuthStep },
   { key: 'location', component: LocationStep },
   { key: 'work', component: WorkSettingsStep },
-  { key: 'earnings', component: EarningsStep },
   { key: 'profile', component: ProfileStep },
   { key: 'bank', component: BankStep },
   { key: 'documents', component: DocumentStep },
