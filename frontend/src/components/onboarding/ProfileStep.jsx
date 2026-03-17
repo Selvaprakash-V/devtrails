@@ -1,0 +1,84 @@
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { useOnboarding } from '../../contexts/OnboardingContext'
+
+const genders = ['Male', 'Female', 'Other', 'Prefer not to say']
+
+export default function ProfileStep({ onNext, onBack }) {
+  const { state, updateField } = useOnboarding()
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: state.profile
+  })
+
+  const onSubmit = (data) => {
+    updateField('profile', 'fullName', data.fullName)
+    updateField('profile', 'age', data.age)
+    updateField('profile', 'gender', data.gender)
+    onNext()
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-xl font-semibold text-slate-50 mb-2">Your profile</h2>
+        <p className="text-sm text-slate-400">Basic information about you</p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Full Name</label>
+          <input
+            {...register('fullName', { required: 'Full name is required' })}
+            type="text"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            placeholder="Enter your full name"
+          />
+          {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Age</label>
+          <input
+            {...register('age', {
+              required: 'Age is required',
+              min: { value: 18, message: 'Must be 18 or older' },
+              max: { value: 80, message: 'Must be 80 or younger' }
+            })}
+            type="number"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            placeholder="Enter your age"
+          />
+          {errors.age && <p className="text-red-400 text-xs mt-1">{errors.age.message}</p>}
+        </div>
+
+        <div>
+          <label className="block text-sm text-slate-300 mb-1">Gender (Optional)</label>
+          <select
+            {...register('gender')}
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+          >
+            <option value="">Select gender</option>
+            {genders.map(gender => <option key={gender} value={gender}>{gender}</option>)}
+          </select>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex-1 py-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}

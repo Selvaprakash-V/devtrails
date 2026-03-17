@@ -1,11 +1,12 @@
 import React from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Register from './pages/Register'
 import PlanSelection from './pages/PlanSelection'
 import Dashboard from './pages/Dashboard'
 import Admin from './pages/Admin'
+import Onboarding from './pages/Onboarding'
 
 const pageVariants = {
   initial: { opacity: 0, y: 16, scale: 0.99 },
@@ -20,7 +21,8 @@ export default function App(){
     <div className="min-h-screen text-gray-100 relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-slate-900/40 to-cyan-400/10 animate-gradient-x" />
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Navbar />
+        {/* Hide navbar for full-screen mobile-style onboarding */}
+        {!location.pathname.startsWith('/onboarding') && <Navbar />}
         <main className="flex-1 flex">
           <AnimatePresence mode="wait">
             <motion.div
@@ -33,7 +35,9 @@ export default function App(){
               className="page-shell"
             >
               <Routes location={location}>
-                <Route path="/" element={<Register/>} />
+                <Route path="/" element={<Navigate to="/onboarding/language" replace />} />
+                <Route path="/register" element={<Register/>} />
+                <Route path="/onboarding/*" element={<Onboarding/>} />
                 <Route path="/plans" element={<PlanSelection/>} />
                 <Route path="/dashboard" element={<Dashboard/>} />
                 <Route path="/admin" element={<Admin/>} />

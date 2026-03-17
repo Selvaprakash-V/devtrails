@@ -3,7 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
-  { to: '/', label: 'Register' },
+  { to: '/onboarding/language', label: 'Onboarding' },
+  { to: '/register', label: 'Register' },
   { to: '/plans', label: 'Plans' },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/admin', label: 'Admin' },
