@@ -37,24 +37,24 @@ export default function ProfileStep({ onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-slate-50 mb-2">Your profile</h2>
-        <p className="text-sm text-slate-400">Basic information about you</p>
+        <h2 className="text-xl font-semibold text-[var(--text)] mb-2">Your profile</h2>
+        <p className="text-sm text-[var(--text-muted)]">Basic information about you</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Full Name</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Full Name</label>
           <input
             {...register('fullName', { required: 'Full name is required' })}
             type="text"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter your full name"
           />
           {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Age</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Age</label>
           <input
             {...register('age', {
               required: 'Age is required',
@@ -62,17 +62,17 @@ export default function ProfileStep({ onNext, onBack }) {
               max: { value: 80, message: 'Must be 80 or younger' }
             })}
             type="number"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter your age"
           />
           {errors.age && <p className="text-red-400 text-xs mt-1">{errors.age.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Gender (Optional)</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Gender (Optional)</label>
           <select
             {...register('gender')}
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           >
             <option value="">Select gender</option>
             {genders.map(gender => <option key={gender} value={gender}>{gender}</option>)}
@@ -83,14 +83,14 @@ export default function ProfileStep({ onNext, onBack }) {
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 py-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+            className="flex-1 py-3 btn-secondary rounded-lg"
           >
             Back
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+            className="flex-1 py-3 btn-primary rounded-lg disabled:opacity-60"
           >
             {saving ? 'Saving...' : 'Next'}
           </button>

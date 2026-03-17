@@ -74,16 +74,16 @@ export default function AuthStep({ onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-slate-50 mb-2">Verify your phone</h2>
-        <p className="text-sm text-slate-400">We'll send an OTP to confirm your number</p>
+        <h2 className="text-xl font-semibold text-[var(--text)] mb-2">Verify your phone</h2>
+        <p className="text-sm text-[var(--text-muted)]">We'll send an OTP to confirm your number</p>
       </div>
 
       {!otpSent ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Phone Number</label>
+            <label className="block text-sm text-[var(--text-muted)] mb-1">Phone Number</label>
             <div className="flex">
-              <span className="inline-flex items-center px-3 bg-slate-700 border border-r-0 border-slate-600 rounded-l-lg text-slate-300">
+              <span className="inline-flex items-center px-3 bg-[var(--card)] border border-r-0 border-[var(--border)] rounded-l-lg text-[var(--text-muted)]">
                 +91
               </span>
               <input
@@ -92,7 +92,7 @@ export default function AuthStep({ onNext, onBack }) {
                   pattern: { value: /^[6-9]\d{9}$/, message: 'Invalid phone number' }
                 })}
                 type="tel"
-                className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-r-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+                className="flex-1 px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-r-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
                 placeholder="Enter 10-digit number"
               />
             </div>
@@ -102,7 +102,7 @@ export default function AuthStep({ onNext, onBack }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+            className="w-full py-3 btn-primary disabled:opacity-60"
           >
             {loading ? 'Sending...' : 'Send OTP'}
           </button>
@@ -110,12 +110,12 @@ export default function AuthStep({ onNext, onBack }) {
       ) : (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Enter OTP sent to +91{state.phone}</label>
+            <label className="block text-sm text-[var(--text-muted)] mb-1">Enter OTP sent to +91{state.phone}</label>
             <input
               type="text"
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 text-center text-lg tracking-widest focus:border-sky-400 focus:outline-none"
+              className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] text-center text-lg tracking-widest focus:border-[var(--accent)] focus:outline-none"
               placeholder="000000"
             />
             {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
@@ -124,19 +124,19 @@ export default function AuthStep({ onNext, onBack }) {
           <button
             onClick={verifyOTP}
             disabled={loading}
-            className="w-full py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+            className="w-full py-3 btn-primary disabled:opacity-60"
           >
             {loading ? 'Verifying...' : 'Verify OTP'}
           </button>
 
           <div className="text-center">
             {timer > 0 ? (
-              <p className="text-sm text-slate-400">Resend OTP in {timer}s</p>
+              <p className="text-sm text-[var(--text-muted)]">Resend OTP in {timer}s</p>
             ) : (
-              <button
+                <button
                 onClick={() => sendOTP(state.phone)}
                 disabled={loading}
-                className="text-sm text-sky-400 hover:text-sky-300 disabled:opacity-60"
+                className="text-sm text-[var(--accent)] hover:text-[var(--accent-strong)] disabled:opacity-60"
               >
                 Resend OTP
               </button>
@@ -146,7 +146,7 @@ export default function AuthStep({ onNext, onBack }) {
       )}
 
       {otpSent && (
-        <button onClick={onBack} className="w-full py-2 text-slate-400 hover:text-slate-300">
+        <button onClick={onBack} className="w-full py-2 text-[var(--text-muted)] hover:text-[var(--text)]">
           Change Number
         </button>
       )}

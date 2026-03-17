@@ -44,13 +44,13 @@ export default function WorkSettingsStep({ onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-slate-50 mb-2">Work settings</h2>
-        <p className="text-sm text-slate-400">Tell us about your work setup</p>
+        <h2 className="text-xl font-semibold text-[var(--text)] mb-2">Work settings</h2>
+        <p className="text-sm text-[var(--text-muted)]">Tell us about your work setup</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-slate-300 mb-2">Vehicle Type</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-2">Vehicle Type</label>
           <div className="grid grid-cols-3 gap-2">
             {vehicleTypes.map(type => (
               <label key={type} className="flex items-center">
@@ -58,9 +58,9 @@ export default function WorkSettingsStep({ onNext, onBack }) {
                   {...register('vehicleType', { required: 'Vehicle type is required' })}
                   type="radio"
                   value={type}
-                  className="mr-2 text-sky-400 focus:ring-sky-400"
+                  className="mr-2 text-[var(--accent)] focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-slate-200">{type}</span>
+                <span className="text-sm text-[var(--text)]">{type}</span>
               </label>
             ))}
           </div>
@@ -68,18 +68,18 @@ export default function WorkSettingsStep({ onNext, onBack }) {
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Work Area</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Work Area</label>
           <input
             {...register('workArea', { required: 'Work area is required' })}
             type="text"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter your work area"
           />
           {errors.workArea && <p className="text-red-400 text-xs mt-1">{errors.workArea.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-2">Work Time</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-2">Work Time</label>
           <div className="space-y-2">
             {workTimes.map(time => (
               <label key={time} className="flex items-center">
@@ -87,9 +87,9 @@ export default function WorkSettingsStep({ onNext, onBack }) {
                   {...register('workTime')}
                   type="checkbox"
                   value={time}
-                  className="mr-2 text-sky-400 focus:ring-sky-400"
+                  className="mr-2 text-[var(--accent)] focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-slate-200">{time}</span>
+                <span className="text-sm text-[var(--text)]">{time}</span>
               </label>
             ))}
           </div>
@@ -99,14 +99,14 @@ export default function WorkSettingsStep({ onNext, onBack }) {
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 py-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+            className="flex-1 py-3 btn-secondary rounded-lg"
           >
             Back
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+            className="flex-1 py-3 btn-primary rounded-lg disabled:opacity-60"
           >
             {saving ? 'Saving...' : 'Next'}
           </button>

@@ -57,16 +57,16 @@ export default function LocationStep({ onNext, onBack }) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-slate-50 mb-2">Your location</h2>
-        <p className="text-sm text-slate-400">Help us understand where you work</p>
+        <h2 className="text-xl font-semibold text-[var(--text)] mb-2">Your location</h2>
+        <p className="text-sm text-[var(--text-muted)]">Help us understand where you work</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm text-slate-300 mb-1">City</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">City</label>
           <select
             {...register('city', { required: 'City is required' })}
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
           >
             <option value="">Select city</option>
             {cities.map(city => <option key={city} value={city}>{city}</option>)}
@@ -75,11 +75,11 @@ export default function LocationStep({ onNext, onBack }) {
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Area/Zone</label>
+          <label className="block text-sm text-[var(--text-muted)] mb-1">Area/Zone</label>
           <input
             {...register('area', { required: 'Area is required' })}
             type="text"
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-200 focus:border-sky-400 focus:outline-none"
+            className="w-full px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
             placeholder="Enter your area"
           />
           {errors.area && <p className="text-red-400 text-xs mt-1">{errors.area.message}</p>}
@@ -89,7 +89,7 @@ export default function LocationStep({ onNext, onBack }) {
             type="button"
             onClick={getLocation}
             disabled={loading || saving}
-            className="w-full py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors disabled:opacity-50"
+            className="w-full py-2 btn-secondary rounded-lg disabled:opacity-50"
           >
             {loading ? 'Getting location...' : '📍 Use Live Location'}
           </button>
@@ -98,14 +98,14 @@ export default function LocationStep({ onNext, onBack }) {
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 py-3 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors"
+            className="flex-1 py-3 btn-secondary rounded-lg"
           >
             Back
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="flex-1 py-3 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+            className="flex-1 py-3 btn-primary rounded-lg disabled:opacity-60"
           >
             {saving ? 'Saving...' : 'Next'}
           </button>

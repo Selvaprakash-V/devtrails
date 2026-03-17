@@ -15,20 +15,20 @@ export default function ProgressBar({ currentStep }) {
 
   return (
     <div className="w-full mb-6">
-      <div className="flex justify-between text-xs text-slate-400 mb-2">
+      <div className="flex justify-between text-xs text-[var(--text-muted)] mb-2">
         {steps.map((step, index) => (
-          <span key={step} className={index <= currentStep ? 'text-sky-300' : ''}>
+          <span key={step} className={index <= currentStep ? 'text-[var(--accent)]' : ''}>
             {step}
           </span>
         ))}
       </div>
-      <div className="w-full bg-slate-700 rounded-full h-2">
+      <div className="w-full bg-[var(--bg-muted)] rounded-full h-2">
         <div
-          className="bg-sky-400 h-2 rounded-full transition-all duration-300"
+          className="bg-[var(--accent)] h-2 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="text-center text-xs text-slate-400 mt-1">
+      <div className="text-center text-xs text-[var(--text-muted)] mt-1">
         Step {currentStep + 1} of {steps.length}
       </div>
     </div>
