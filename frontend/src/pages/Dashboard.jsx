@@ -249,6 +249,11 @@ export default function Dashboard() {
         }
       }}
       className="space-y-6"
+      style={{
+        background: 'linear-gradient(180deg, rgba(255,245,238,0.6), rgba(255,255,255,0.9))',
+        padding: '1rem',
+        borderRadius: '12px'
+      }}
     >
       <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="flex flex-col gap-1">
         <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-[var(--text)]">Hi {user.name}, you are covered</h2>
@@ -271,7 +276,7 @@ export default function Dashboard() {
 
       <motion.div
         variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
-        className="card-glass p-4 md:p-6 border border-[var(--border)]"
+        className="card-glass p-5 md:p-6 border border-[var(--border)]"
       >
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-stretch justify-between">
           <div className="flex-1 min-w-0">
@@ -304,7 +309,7 @@ export default function Dashboard() {
 
       <motion.div
         variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
-        className="card-glass p-4 md:p-6 flex justify-between items-center border border-[var(--border)]"
+        className="card-glass p-5 md:p-6 flex justify-between items-center border border-[var(--border)] shadow-glow"
       >
         <div>
           <div className="text-xs text-[var(--text-muted)]">Name</div>
@@ -329,7 +334,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <motion.div
-          className="card-glass p-4 md:p-6 border border-[var(--border)]"
+          className="card-glass p-5 md:p-6 border border-[var(--border)] shadow-glow"
           variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
         >
           <div className="flex items-center justify-between">
@@ -353,7 +358,7 @@ export default function Dashboard() {
         </motion.div>
 
         <motion.div
-          className="card-glass p-4 md:p-6 border border-[var(--border)]"
+          className="card-glass p-5 md:p-6 border border-[var(--border)] shadow-glow"
           variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
         >
           <h3 className="font-semibold mb-3 text-[var(--text)]">Payout history</h3>

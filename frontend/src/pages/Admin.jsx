@@ -28,7 +28,7 @@ export default function Admin(){
       <div>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-[var(--text)]">Admin insights</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          High-level metrics across all riders and policies on DevTrails.
+          High-level metrics across all riders and policies on QuickClaim.
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

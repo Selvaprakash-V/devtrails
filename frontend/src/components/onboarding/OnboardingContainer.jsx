@@ -72,10 +72,14 @@ export default function OnboardingContainer() {
   return (
     <div className="min-h-screen bg-[var(--bg-muted)] text-[var(--text)] p-4 flex items-stretch">
       <div className="w-full max-w-md mx-auto flex flex-col gap-3">
-        <ProgressBar currentStep={state.currentStep} />
 
         <div className="flex-1 flex">
-          <div className="card-glass border border-[var(--border)] rounded-2xl p-5 shadow-xl w-full flex flex-col relative overflow-hidden">
+          <div
+            className="card-glass border border-[var(--border)] rounded-2xl p-5 shadow-xl w-full flex flex-col relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(180deg, rgba(255,245,238,0.85), rgba(255,255,255,0.96))'
+            }}
+          >
             <AnimatePresence mode="wait" custom={state.currentStep}>
               <motion.div
                 key={state.currentStep}
@@ -85,7 +89,15 @@ export default function OnboardingContainer() {
                 transition={{ duration: 0.35, ease: 'easeOut' }}
                 className="flex-1 flex flex-col w-full h-full"
               >
-                <CurrentStepComponent onNext={handleNext} onBack={handleBack} />
+                <div className="flex flex-col h-full">
+                  <div className="flex-1 overflow-auto pr-1 pb-4">
+                    <CurrentStepComponent onNext={handleNext} onBack={handleBack} />
+                  </div>
+
+                  <div className="pt-3">
+                    <ProgressBar currentStep={state.currentStep} />
+                  </div>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>

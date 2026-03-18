@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useOnboarding } from '../../contexts/OnboardingContext'
 import { sendOnboardingOtp, verifyOnboardingOtp } from '../../services/api'
+import InputField from './ui/InputField'
+import Button from './ui/Button'
 
 export default function AuthStep({ onNext, onBack }) {
   const { state, setPhone, setOtp: setOtpContext } = useOnboarding()
@@ -81,31 +83,26 @@ export default function AuthStep({ onNext, onBack }) {
       {!otpSent ? (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm text-[var(--text-muted)] mb-1">Phone Number</label>
-            <div className="flex">
-              <span className="inline-flex items-center px-3 bg-[var(--card)] border border-r-0 border-[var(--border)] rounded-l-lg text-[var(--text-muted)]">
-                +91
-              </span>
-              <input
-                {...register('phone', {
+            <div className="flex items-center gap-3">
+              <span className="inline-flex items-center px-3 bg-[var(--card)] border border-r-0 border-[var(--border)] rounded-l-lg text-[var(--text-muted)]">+91</span>
+              <InputField
+                label={null}
+                name="phone"
+                registerFn={register}
+                registerOptions={{
                   required: 'Phone number is required',
                   pattern: { value: /^[6-9]\d{9}$/, message: 'Invalid phone number' }
-                })}
+                }}
                 type="tel"
-                className="flex-1 px-3 py-2 bg-[var(--bg)] border border-[var(--border)] rounded-r-lg text-[var(--text)] focus:border-[var(--accent)] focus:outline-none"
                 placeholder="Enter 10-digit number"
               />
             </div>
             {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 btn-primary disabled:opacity-60"
-          >
+          <Button type="submit" loading={loading} className="w-full">
             {loading ? 'Sending...' : 'Send OTP'}
-          </button>
+          </Button>
         </form>
       ) : (
         <div className="space-y-4">

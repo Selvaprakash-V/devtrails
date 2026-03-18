@@ -1,19 +1,32 @@
 import React, { useState } from 'react'
 import { useOnboarding } from '../../contexts/OnboardingContext'
+import CardSelector from './ui/CardSelector'
+import Button from './ui/Button'
 
-const languages = ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Malayalam']
+const languages = [
+  { value: 'en', label: 'English' },
+  { value: 'hi', label: 'Hindi' },
+  { value: 'ta', label: 'Tamil' },
+  { value: 'te', label: 'Telugu' },
+  { value: 'kn', label: 'Kannada' },
+  { value: 'ml', label: 'Malayalam' },
+]
 
 export default function LanguageStep({ onNext }) {
   const { setLanguage } = useOnboarding()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [selected, setSelected] = useState(null)
 
   const handleSelect = async (lang) => {
     try {
       setLoading(true)
       setError('')
+      setSelected(lang)
+      // persist
       setLanguage(lang)
-      onNext()
+      // small delay for nicer microinteraction
+      setTimeout(() => onNext(), 220)
     } catch (e) {
       setError(e.message || 'Failed to save language')
     } finally {
@@ -28,20 +41,19 @@ export default function LanguageStep({ onNext }) {
         <p className="text-sm text-[var(--text-muted)]">Select your preferred language for the app</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {languages.map((lang) => (
-          <button
-            key={lang}
-            onClick={() => handleSelect(lang)}
-            disabled={loading}
-            className="p-4 bg-[var(--bg)] border border-[var(--border)] rounded-lg text-[var(--text)] hover:bg-[var(--card)] hover:border-[var(--accent)] transition-colors disabled:opacity-60"
-          >
-            {lang}
-          </button>
-        ))}
-      </div>
+      <CardSelector
+        options={languages.map((l) => ({ value: l.value, label: l.label }))}
+        selected={selected}
+        onSelect={handleSelect}
+      />
 
       {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+
+      <div className="pt-2">
+        <Button variant="secondary" className="w-full" onClick={() => handleSelect('en')}>
+          Continue in English
+        </Button>
+      </div>
     </div>
   )
 }

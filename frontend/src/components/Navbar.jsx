@@ -3,11 +3,57 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const navLinks = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/forecast', label: 'Forecast' },
-  { to: '/plans', label: 'Insurance' },
-  { to: '/dashboard?tab=wallet', label: 'Wallet' },
-  { to: '/dashboard?tab=profile', label: 'Profile' },
+  {
+    to: '/dashboard',
+    label: 'Dashboard',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 10.5L12 4l9 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M5 21V11h14v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  },
+  {
+    to: '/forecast',
+    label: 'Earnings',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2v6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M17 8c0 3-5 6-5 6s-5-3-5-6a5 5 0 0 1 10 0z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  },
+  {
+    to: '/plans',
+    label: 'History',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M8 8h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M8 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    )
+  },
+  {
+    to: '/documents',
+    label: 'Documents',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M21 12l-6-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  },
+  {
+    to: '/settings',
+    label: 'Settings',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 1 1 2.3 16.88l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09c.67 0 1.24-.41 1.51-1a1.65 1.65 0 0 0-.33-1.82L4.3 3.3A2 2 0 1 1 7.12.47l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 11 1V.91a2 2 0 1 1 4 0V1c.44 0 .86.15 1.2.4.36.26.63.62.77 1.05.13.4.4.75.77 1.02l.09.07a2 2 0 1 1 2.83 2.83l-.06.06c-.33.33-.47.81-.33 1.24.2.57.19 1.2-.03 1.76z" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
 ]
 
 export default function Navbar() {
@@ -15,129 +61,92 @@ export default function Navbar() {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleQuickNav = (to) => {
-    navigate(to)
-    setIsOpen(false)
-  }
+  const handleClose = () => setIsOpen(false)
 
   const handleSignOut = () => {
     try {
       localStorage.removeItem('devtrails_user')
       localStorage.removeItem('devtrails_onboarding_complete')
       localStorage.removeItem('devtrails_onboarding_token')
-    } catch (e) {
-      // ignore storage errors
-    }
+    } catch (e) {}
     navigate('/onboarding/language')
-    setIsOpen(false)
   }
 
   return (
-    <motion.nav
-      initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.45, ease: 'easeOut' }}
-      className="sticky top-0 z-40 border-b border-[var(--border)] bg-white/90 backdrop-blur-xl"
-    >
-      <div className="max-w-5xl mx-auto px-4 md:px-6 lg:px-8 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <motion.div
-            className="h-8 w-8 rounded-2xl bg-gradient-to-tr from-orange-400 via-amber-400 to-orange-500 shadow-glow flex items-center justify-center text-xs font-semibold text-white"
-            animate={{ rotate: [0, 2, -2, 0], scale: [1, 1.04, 1.04, 1] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+    <>
+      {/* Floating collapsed bar */}
+      <div className="fixed right-2 top-4 z-50">
+        <div className="flex items-center">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(true)}
+            className="w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border border-[var(--border)] shadow-md flex items-center justify-center text-lg"
+            aria-label="Open menu"
           >
-            DT
-          </motion.div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-tight text-[var(--text)]">DevTrails</span>
-            <span className="text-[11px] text-[var(--text-muted)]">Parametric rain insurance for riders</span>
-          </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 7h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4 12h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4 17h16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </motion.button>
         </div>
-
-        {/* Navigation */}
-        <div className="hidden md:flex items-center gap-1 text-xs md:text-sm">
-          {navLinks.map((link) => {
-            const active = location.pathname === link.to || (link.to.startsWith('/dashboard') && location.pathname === '/dashboard')
-            return (
-              <motion.div key={link.to} whileHover={{ y: -1 }} className="relative px-2 md:px-3 py-1">
-                <Link
-                  to={link.to}
-                  className={`relative z-10 transition-colors duration-200 ${
-                    active ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] hover:text-[var(--accent)]'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-                {active && (
-                  <motion.div
-                    layoutId="nav-active-pill"
-                    className="absolute inset-0 rounded-full bg-[var(--accent-soft)] border border-[var(--accent)]/40"
-                    transition={{ type: 'spring', stiffness: 420, damping: 35 }}
-                  />
-                )}
-              </motion.div>
-            )
-          })}
-        </div>
-
-        <div className="hidden md:flex items-center gap-2 text-xs md:text-sm">
-          <button onClick={handleSignOut} className="btn-primary px-3 py-2">Sign out</button>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors touch-manipulation"
-        >
-          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-          </svg>
-        </motion.button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-[var(--border)] bg-white/95 backdrop-blur-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-40"
           >
-            <div className="px-4 py-3 space-y-1">
-              {navLinks.map((link, index) => {
-                const active = location.pathname === link.to || (link.to.startsWith('/dashboard') && location.pathname === '/dashboard')
-                return (
-                  <motion.div
-                    key={link.to}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
+            {/* Dimming backdrop */}
+            <div onClick={handleClose} className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+
+            {/* Sidebar panel */}
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: '20%' }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="absolute right-0 top-0 bottom-0 w-[80vw] max-w-[520px] bg-white/95 backdrop-blur-lg p-6 shadow-2xl overflow-auto"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-[var(--accent)] to-[var(--accent-strong)] flex items-center justify-center text-white font-semibold">QC</div>
+                  <div>
+                    <div className="text-lg font-semibold">QuickClaim</div>
+                    <div className="text-xs text-[var(--text-muted)]">Secure & verified</div>
+                  </div>
+                </div>
+                <button onClick={handleClose} className="text-[var(--text-muted)]">Close</button>
+              </div>
+
+              <nav className="mt-6">
+                {navLinks.map((link) => {
+                  const active = location.pathname === link.to || location.pathname.startsWith(link.to)
+                  return (
                     <Link
+                      key={link.to}
                       to={link.to}
                       onClick={() => setIsOpen(false)}
-                      className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                        active
-                          ? 'text-[var(--accent)] bg-[var(--accent-soft)]'
-                          : 'text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)]'
-                      }`}
+                      className={`flex items-center gap-3 p-3 rounded-lg mb-2 transition-colors ${active ? 'bg-[var(--accent-soft)] text-[var(--accent)]' : 'text-[var(--text-muted)] hover:bg-[var(--bg-muted)] hover:text-[var(--accent)]'}`}
                     >
-                      {link.label}
+                      <div className="w-9 h-9 rounded-md bg-white/60 flex items-center justify-center">{link.icon}</div>
+                      <div className="text-sm font-medium">{link.label}</div>
                     </Link>
-                  </motion.div>
-                )
-              })}
+                  )
+                })}
+              </nav>
 
-              <div className="pt-2 border-t border-[var(--border)] grid grid-cols-2 gap-2 text-sm">
-                <button onClick={handleSignOut} className="btn-primary px-3 py-2 text-left col-span-2">Sign out</button>
+              <div className="mt-6 pt-4 border-t border-[var(--border)]">
+                <button onClick={handleSignOut} className="btn-primary w-full py-3">Sign out</button>
               </div>
-            </div>
+            </motion.aside>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   )
 }

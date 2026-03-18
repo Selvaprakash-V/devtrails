@@ -29,8 +29,8 @@ body {
 .card-glass {
   background: var(--card);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(255, 107, 26, 0.08);
+  border-radius: 20px;
 }
 
 .btn-primary {
