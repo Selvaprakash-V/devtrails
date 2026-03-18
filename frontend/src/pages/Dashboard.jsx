@@ -28,9 +28,22 @@ export default function Dashboard() {
       // Allow dashboard (and weather) to render even if the
       // demo registration flow hasn't been completed yet.
       // Use a lightweight fallback profile instead of blocking.
+      let fallbackName = 'Rider'
+      try {
+        const onboardingRaw = localStorage.getItem('devtrails_onboarding')
+        if (onboardingRaw) {
+          const onboarding = JSON.parse(onboardingRaw)
+          fallbackName =
+            (onboarding.profile && onboarding.profile.fullName) ||
+            onboarding.phone ||
+            'Rider'
+        }
+      } catch (e) {
+        // ignore parsing errors, keep default name
+      }
       setUser({
         id: null,
-        name: 'Rider',
+        name: fallbackName,
         city: '',
         plan: null,
         weeklyPremium: 0,
@@ -242,14 +255,26 @@ export default function Dashboard() {
         <p className="text-sm text-[var(--text-muted)] max-w-xl">
           Track your policy, weather-linked payouts, and active protection.
         </p>
+        {weather && (
+          <p className="text-xs text-[var(--text-muted)] mt-1">
+            Current location: {weather.city}
+            {geo.lat != null && geo.lon != null && (
+              <span> (lat {geo.lat.toFixed(3)}, lon {geo.lon.toFixed(3)})</span>
+            )}
+            {' · '}Weather: {weather.desc || weather.main} ({weather.temp}°C, feels {weather.feels}°C)
+          </p>
+        )}
+        {weatherErr && !weather && (
+          <p className="text-xs text-[var(--accent)] mt-1">{weatherErr}</p>
+        )}
       </motion.div>
 
       <motion.div
         variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }}
         className="card-glass p-4 md:p-6 border border-[var(--border)]"
       >
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-stretch justify-between">
+          <div className="flex-1 min-w-0">
             <div className="text-xs text-[var(--text-muted)]">Risk analysis</div>
             <div className="mt-2 flex items-center gap-3">
               <div className="text-2xl font-bold text-[var(--accent)]">{riskScore ?? '—'}</div>
@@ -261,7 +286,12 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="text-right">
+
+          <div className="flex-1 min-w-[220px]">
+            <CurrentWeather />
+          </div>
+
+          <div className="text-right lg:ml-4">
             <div className="text-xs text-[var(--text-muted)]">Weekly earnings</div>
             <div className="text-2xl font-semibold text-[var(--accent)]">₹{weeklyEarnings}</div>
             <div className="text-xs text-[var(--text-muted)]">Since {new Date(lastWeekPaid || startOfWeek()).toLocaleDateString()}</div>
@@ -271,8 +301,6 @@ export default function Dashboard() {
           </div>
         </div>
       </motion.div>
-
-      <CurrentWeather />
 
       <motion.div
         variants={{ hidden: { opacity: 0, scale: 0.98 }, visible: { opacity: 1, scale: 1 } }}
