@@ -36,47 +36,17 @@ export default function OTPVerification() {
       return;
     }
 
-    // Skip OTP validation - accept any 4-digit code
     setLoading(true);
+    setError('');
 
-    try {
-      const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-      
-      if (!onboardingData.phone) {
-        setError('Registration data missing. Please start over.');
-        setLoading(false);
-        setTimeout(() => navigate('/onboarding'), 2000);
-        return;
-      }
-
-      try {
-        const response = await workerAPI.register({
-          name: onboardingData.name,
-          phone: onboardingData.phone,
-          city: onboardingData.city,
-          platform: onboardingData.platform
-        });
-
-        localStorage.setItem('workerToken', response.token);
-        localStorage.setItem('workerData', JSON.stringify(response.worker));
-        navigate('/permissions');
-      } catch (registerErr) {
-        if (registerErr.response?.status === 400) {
-          const loginResponse = await workerAPI.verifyOTP(onboardingData.phone, otpCode);
-          
-          localStorage.setItem('workerToken', loginResponse.token);
-          localStorage.setItem('workerData', JSON.stringify(loginResponse.worker));
-          navigate('/permissions');
-        } else {
-          throw registerErr;
-        }
-      }
-    } catch (err) {
-      console.error('Verification error:', err);
-      setError(err.response?.data?.error || 'Verification failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+    
+    // Always proceed with demo mode - no backend validation
+    setTimeout(() => {
+      localStorage.setItem('workerToken', 'demo-token-' + Date.now());
+      localStorage.setItem('workerData', JSON.stringify(onboardingData));
+      navigate('/permissions');
+    }, 500);
   };
 
   return (

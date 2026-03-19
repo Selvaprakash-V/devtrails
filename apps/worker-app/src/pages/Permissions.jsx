@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { requestLocationPermission } from '../services/location';
+import { Geolocation } from '@capacitor/geolocation';
 import { workerAPI } from '../services/api';
 
 export default function Permissions() {
@@ -13,18 +13,44 @@ export default function Permissions() {
     setError('');
 
     try {
-      const location = await requestLocationPermission();
+      // Request permission first
+      const permission = await Geolocation.requestPermissions();
       
-      await workerAPI.updateLocation(location.lat, location.lng);
+      if (permission.location === 'denied') {
+        setError('Location permission denied. Please enable it in your device settings.');
+        setLoading(false);
+        return;
+      }
+
+      // Get current position
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+      
+      const location = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      // Try to update location on backend
+      try {
+        await workerAPI.updateLocation(location.lat, location.lng);
+      } catch (apiErr) {
+        console.log('Backend unavailable, proceeding in demo mode');
+      }
       
       localStorage.setItem('locationPermission', 'granted');
+      localStorage.setItem('lastLocation', JSON.stringify(location));
       navigate('/dashboard');
     } catch (err) {
-      if (err.code === 1) {
-        setError('Location permission denied. Please enable it in your browser settings.');
-      } else if (err.code === 2) {
+      console.error('Location error:', err);
+      if (err.message?.includes('denied')) {
+        setError('Location permission denied. Please enable it in your device settings.');
+      } else if (err.message?.includes('unavailable')) {
         setError('Location unavailable. Please check your device settings.');
-      } else if (err.code === 3) {
+      } else if (err.message?.includes('timeout')) {
         setError('Location request timeout. Please try again.');
       } else {
         setError('Unable to access location. Please try again.');
@@ -32,6 +58,12 @@ export default function Permissions() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSkip = () => {
+    // Allow skipping for demo purposes
+    localStorage.setItem('locationPermission', 'skipped');
+    navigate('/dashboard');
   };
 
   return (
@@ -94,6 +126,13 @@ export default function Permissions() {
             className="w-full py-4 bg-indigo-600 text-white font-semibold rounded-xl shadow-sm hover:bg-indigo-700 transition disabled:opacity-50 mb-3"
           >
             {loading ? 'Requesting Access...' : 'Allow Location Access'}
+          </button>
+
+          <button
+            onClick={handleSkip}
+            className="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition mb-3"
+          >
+            Skip for Now (Demo Mode)
           </button>
 
           <p className="text-center text-gray-500 text-xs">
