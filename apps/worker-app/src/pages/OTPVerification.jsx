@@ -1,23 +1,47 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { workerAPI } from '../services/api';
 
 export default function OTPVerification() {
   const navigate = useNavigate();
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [generatedOTP, setGeneratedOTP] = useState('');
+  const [showOTPPopup, setShowOTPPopup] = useState(false);
+  const inputRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+
+  useEffect(() => {
+    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+    const phone = onboardingData.phone;
+    
+    if (!phone) {
+      setError('Phone number missing');
+      return;
+    }
+
+    const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+    setPhoneNumber(formattedPhone);
+
+    // Generate random 6-digit OTP
+    const randomOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOTP(randomOTP);
+    
+    // Show popup with OTP
+    setShowOTPPopup(true);
+  }, []);
 
   const handleChange = (index, value) => {
     if (value.length > 1) return;
+    if (!/^\d*$/.test(value)) return;
     
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
     setError('');
 
-    if (value && index < 3) {
+    if (value && index < 5) {
       inputRefs[index + 1].current.focus();
     }
   };
@@ -31,26 +55,64 @@ export default function OTPVerification() {
   const handleVerify = async () => {
     const otpCode = otp.join('');
     
-    if (otpCode.length !== 4) {
-      setError('Please enter complete OTP');
+    if (otpCode.length !== 6) {
+      setError('Please enter complete 6-digit OTP');
       return;
     }
 
     setLoading(true);
     setError('');
 
-    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-    
-    // Always proceed with demo mode - no backend validation
-    setTimeout(() => {
-      localStorage.setItem('workerToken', 'demo-token-' + Date.now());
-      localStorage.setItem('workerData', JSON.stringify(onboardingData));
-      navigate('/permissions');
-    }, 500);
+    // Check if entered OTP matches generated OTP
+    if (otpCode === generatedOTP) {
+      setTimeout(() => {
+        const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+        localStorage.setItem('workerToken', 'token-' + Date.now());
+        localStorage.setItem('workerData', JSON.stringify({ ...onboardingData, phone: phoneNumber }));
+        navigate('/permissions');
+      }, 800);
+    } else {
+      setLoading(false);
+      setError('Invalid OTP. Please check and try again.');
+    }
+  };
+
+  const closePopup = () => {
+    setShowOTPPopup(false);
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* OTP Popup */}
+      {showOTPPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="text-center mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Your OTP Code</h2>
+              <p className="text-gray-600 text-sm mb-4">Use this code to verify your phone number</p>
+              
+              <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 mb-4">
+                <p className="text-4xl font-bold text-indigo-600 tracking-widest">{generatedOTP}</p>
+              </div>
+              
+              <p className="text-gray-500 text-xs">This code is valid for this session only</p>
+            </div>
+            
+            <button
+              onClick={closePopup}
+              className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white border-b border-gray-100 px-4 py-4">
         <button
@@ -73,11 +135,10 @@ export default function OTPVerification() {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Verify OTP</h1>
-            <p className="text-gray-600 text-sm">Enter any 4-digit code</p>
-            <p className="text-indigo-600 text-xs mt-2 font-medium">(Demo: Any 4 digits work)</p>
+            <p className="text-gray-600 text-sm">Enter the code sent to {phoneNumber}</p>
           </div>
 
-          <div className="flex justify-center gap-3 mb-6">
+          <div className="flex justify-center gap-2 mb-6">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -88,7 +149,7 @@ export default function OTPVerification() {
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-14 h-14 text-center text-2xl font-bold bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="w-12 h-14 text-center text-xl font-bold bg-white border-2 border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
             ))}
           </div>
@@ -102,9 +163,16 @@ export default function OTPVerification() {
           <button
             onClick={handleVerify}
             disabled={loading}
-            className="w-full py-4 bg-indigo-600 text-white font-semibold rounded-xl shadow-sm hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 bg-indigo-600 text-white font-semibold rounded-xl shadow-sm hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed mb-3"
           >
             {loading ? 'Verifying...' : 'Verify & Continue'}
+          </button>
+
+          <button
+            onClick={() => setShowOTPPopup(true)}
+            className="w-full py-3 text-indigo-600 font-medium hover:text-indigo-700 transition"
+          >
+            Show OTP Again
           </button>
         </div>
       </div>

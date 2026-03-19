@@ -22,6 +22,10 @@ export default function Onboarding() {
       alert('Please fill all fields');
       return;
     }
+    if (step === 1 && formData.phone.length !== 10) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
     if (step === 2 && (!formData.platform || !formData.city)) {
       alert('Please fill all fields');
       return;
