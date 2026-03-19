@@ -60,20 +60,31 @@ export default function OTPVerification() {
       return;
     }
 
+    if (otpCode !== generatedOTP) {
+      setError('Invalid OTP. Please check and try again.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
-    // Check if entered OTP matches generated OTP
-    if (otpCode === generatedOTP) {
-      setTimeout(() => {
-        const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-        localStorage.setItem('workerToken', 'token-' + Date.now());
-        localStorage.setItem('workerData', JSON.stringify({ ...onboardingData, phone: phoneNumber }));
-        navigate('/permissions');
-      }, 800);
-    } else {
+    try {
+      const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+      
+      // Register user with backend
+      const response = await workerAPI.register(onboardingData);
+      
+      // Store token and user data, clear onboarding temp data
+      localStorage.setItem('workerToken', response.token);
+      localStorage.setItem('workerData', JSON.stringify(response.user));
+      localStorage.removeItem('onboardingData');
+      localStorage.removeItem('spoofHistory');
+      
+      navigate('/permissions');
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError(error.response?.data?.error || 'Registration failed. Please try again.');
       setLoading(false);
-      setError('Invalid OTP. Please check and try again.');
     }
   };
 

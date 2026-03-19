@@ -4,25 +4,22 @@ import {
   updateProfile,
   updateLocation, 
   getDashboard,
-  getRiskHistory,
-  markAlertRead
+  getPayouts,
+  getClaimStats,
+  getFraudFlags
 } from '../controllers/workerController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { cacheMiddleware, workerCacheKey, dashboardCacheKey } from '../middleware/cache.js';
-import { CACHE_TTL } from '../config/redis.js';
 
 const router = express.Router();
 
 router.use(authenticate);
 
-// Cached routes
-router.get('/profile', cacheMiddleware(CACHE_TTL.WORKER_PROFILE, workerCacheKey), getProfile);
-router.get('/dashboard', cacheMiddleware(CACHE_TTL.DASHBOARD, dashboardCacheKey), getDashboard);
-router.get('/risk-history', cacheMiddleware(CACHE_TTL.STATS), getRiskHistory);
-
-// Non-cached routes (mutations)
+router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.post('/location', updateLocation);
-router.patch('/alerts/:alertId/read', markAlertRead);
+router.get('/dashboard', getDashboard);
+router.get('/payouts', getPayouts);
+router.get('/stats', getClaimStats);
+router.get('/fraud-flags', getFraudFlags);
 
 export default router;

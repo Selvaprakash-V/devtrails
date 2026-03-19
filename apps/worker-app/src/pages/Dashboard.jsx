@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { workerAPI } from '../services/api';
-import { watchLocation, stopWatchingLocation } from '../services/location';
+import { watchLocation, stopWatchingLocation } from '../services/locationCapacitor';
 import BottomNav from '../components/BottomNav';
 
 export default function Dashboard() {
@@ -10,38 +10,39 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const loadedOnce = useRef(false);
 
   useEffect(() => {
     const watchId = watchLocation((location) => {
       setCurrentLocation(location);
-      loadDashboard(location.lat, location.lng, true);
+      // Only do the full load (with spinner) on first location fix
+      if (!loadedOnce.current) {
+        loadedOnce.current = true;
+        loadDashboard(location.lat, location.lng, false);
+      }
     });
+
+    // Hard timeout — if no location in 10s, stop spinner and show error
+    const timeout = setTimeout(() => {
+      if (!loadedOnce.current) {
+        loadedOnce.current = true;
+        setLoading(false);
+      }
+    }, 10000);
 
     return () => {
       stopWatchingLocation(watchId);
+      clearTimeout(timeout);
     };
   }, []);
 
   const loadDashboard = async (lat, lng, silent = false) => {
     if (!lat || !lng) return;
-    
     if (!silent) setLoading(true);
     else setRefreshing(true);
-
     try {
       const dashboardData = await workerAPI.getDashboard(lat, lng);
       setData(dashboardData);
-      
-      if (dashboardData.spoofCheck?.isSpoofed) {
-        const history = JSON.parse(localStorage.getItem('spoofHistory') || '[]');
-        history.unshift({
-          timestamp: new Date().toISOString(),
-          distance: dashboardData.spoofCheck.distance,
-          gpsLocation: dashboardData.spoofCheck.gpsLocation,
-          ipLocation: dashboardData.spoofCheck.ipLocation
-        });
-        localStorage.setItem('spoofHistory', JSON.stringify(history.slice(0, 10)));
-      }
     } catch (error) {
       console.error('Failed to load dashboard:', error);
     } finally {

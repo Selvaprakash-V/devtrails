@@ -52,55 +52,48 @@ export const requestLocationPermission = async () => {
 };
 
 export const watchLocation = (callback) => {
+  // Fire immediately with last known location so dashboard doesn't hang
+  const last = localStorage.getItem('lastLocation');
+  if (last) {
+    try { callback(JSON.parse(last)); } catch {}
+  }
+
   let watchId = null;
 
-  const startWatch = async () => {
-    try {
-      watchId = await Geolocation.watchPosition(
-        {
-          enableHighAccuracy: true,
-          timeout: 30000,
-          maximumAge: 0
-        },
-        (position, err) => {
-          if (err) {
-            console.error('Watch position error:', err);
-            // Use last known location or demo location
-            const lastLocation = JSON.parse(localStorage.getItem('lastLocation') || '{"lat": 12.9716, "lng": 77.5946}');
-            callback(lastLocation);
-            return;
-          }
-
-          if (position) {
-            const location = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-              timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('lastLocation', JSON.stringify(location));
-            callback(location);
-          }
-        }
-      );
-    } catch (error) {
-      console.error('Failed to start watching location:', error);
-      // Fallback to demo location
-      const demoLocation = { lat: 12.9716, lng: 77.5946, timestamp: new Date().toISOString() };
-      callback(demoLocation);
+  Geolocation.watchPosition(
+    { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 },
+    (position, err) => {
+      if (err || !position) {
+        console.error('Watch position error:', err);
+        return;
+      }
+      const location = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('lastLocation', JSON.stringify(location));
+      callback(location);
     }
-  };
+  ).then(id => { watchId = id; }).catch(err => {
+    console.error('Failed to start watching location:', err);
+    // fallback: use stored location or Bangalore default
+    const fallback = last
+      ? JSON.parse(last)
+      : { lat: 12.9716, lng: 77.5946, timestamp: new Date().toISOString() };
+    callback(fallback);
+  });
 
-  startWatch();
-  return watchId;
+  return { getId: () => watchId };
 };
 
-export const stopWatchingLocation = async (watchId) => {
-  if (watchId) {
-    try {
-      await Geolocation.clearWatch({ id: watchId });
-    } catch (error) {
-      console.error('Failed to stop watching location:', error);
-    }
+export const stopWatchingLocation = async (watchRef) => {
+  if (!watchRef) return;
+  try {
+    const id = typeof watchRef === 'object' ? watchRef.getId?.() : watchRef;
+    if (id) await Geolocation.clearWatch({ id });
+  } catch (err) {
+    console.error('Failed to stop watching location:', err);
   }
 };
 

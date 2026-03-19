@@ -1,8 +1,5 @@
 import Claim from '../models/Claim.js';
-import Worker from '../models/Worker.js';
-import { getEnvironmentalData, calculateRiskScore, shouldTriggerPayout } from './environmentService.js';
-import { createAlert, deactivateAlertsByType } from './alertService.js';
-import { v4 as uuidv4 } from 'uuid';
+import { getEnvironmentalData, calculateRiskScore } from './environmentService.js';
 
 export const calculatePayoutAmount = (estimatedLoss, riskScore, planMultiplier = 1.0) => {
   let baseAmount = estimatedLoss * (riskScore / 100);

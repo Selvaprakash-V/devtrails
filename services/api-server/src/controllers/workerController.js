@@ -1,190 +1,261 @@
-import Worker from '../models/Worker.js';
-import RiskSnapshot from '../models/RiskSnapshot.js';
-import { getEnvironmentalData, calculateRiskScore, shouldTriggerPayout } from '../services/environmentService.js';
-import { updateTrustScore, checkLocationValidity } from '../services/trustScoreService.js';
-import { getActiveAlerts, createAlert, deactivateAlertsByType } from '../services/alertService.js';
-import { processPayout, checkDuplicateClaim } from '../services/payoutService.js';
+import User from '../models/User.js';
+import Claim from '../models/Claim.js';
+import Payout from '../models/Payout.js';
+import FraudFlag from '../models/FraudFlag.js';
+import { LocationHistory, RiskHistory } from '../models/History.js';
+import { getEnvironmentalData, calculateRiskScore } from '../services/environmentService.js';
+import axios from 'axios';
+import db from '../../database/db.js';
+
+const haversineKm = (lat1, lng1, lat2, lng2) => {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+};
+
+const resolveIP = async (ip) => {
+  try {
+    const clean = ip?.replace('::ffff:', '').trim();
+    if (!clean || clean === '127.0.0.1' || /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(clean)) return null;
+    const r = await axios.get(`http://ip-api.com/json/${clean}`, { timeout: 5000 });
+    return r.data?.status === 'success' ? { lat: r.data.lat, lng: r.data.lon, city: r.data.city, ip: clean } : null;
+  } catch { return null; }
+};
 
 export const getProfile = async (req, res) => {
-  const worker = await Worker.findById(req.userId).select('-locationHistory');
-  res.json(worker);
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
 };
 
 export const updateProfile = async (req, res) => {
-  const { name, city, avgOrdersPerDay, payoutPerOrder, workingHours } = req.body;
-  
-  const worker = await Worker.findByIdAndUpdate(
-    req.userId,
-    { name, city, avgOrdersPerDay, payoutPerOrder, workingHours },
-    { new: true }
-  );
-  
-  res.json(worker);
+  try {
+    const { name, city, avgOrdersPerDay, payoutPerOrder, workingHours } = req.body;
+    
+    const user = await User.update(req.userId, {
+      name,
+      city,
+      avgOrdersPerDay,
+      payoutPerOrder,
+      workingHours
+    });
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
 };
 
 export const updateLocation = async (req, res) => {
-  const { lat, lng, accuracy } = req.body;
+  try {
+    const { lat, lng, accuracy } = req.body;
 
-  const locationCheck = checkLocationValidity({ lat, lng });
-  if (!locationCheck.valid) {
-    return res.status(400).json({ error: 'Invalid location', reason: locationCheck.reason });
+    await LocationHistory.create({ userId: req.userId, latitude: lat, longitude: lng, accuracy });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Update location error:', error);
+    res.status(500).json({ error: 'Failed to update location' });
   }
-
-  const worker = await Worker.findById(req.userId);
-
-  const locationEntry = {
-    lat,
-    lng,
-    timestamp: new Date(),
-    accuracy: accuracy || null
-  };
-
-  worker.currentLocation = locationEntry;
-  worker.locationHistory.push(locationEntry);
-
-  if (worker.locationHistory.length > 100) {
-    worker.locationHistory = worker.locationHistory.slice(-100);
-  }
-
-  worker.gpsStatus = 'active';
-  worker.lastActive = new Date();
-
-  await worker.save();
-
-  const trustResult = await updateTrustScore(req.userId, { lat, lng });
-
-  if (trustResult.issues.length > 0) {
-    await createAlert(
-      req.userId,
-      'trust_warning',
-      'Location Issue Detected',
-      `Suspicious activity: ${trustResult.issues.join(', ')}`,
-      { issues: trustResult.issues },
-      'warning'
-    );
-  }
-
-  res.json({ 
-    success: true, 
-    gpsStatus: worker.gpsStatus,
-    trustScore: trustResult.trustScore
-  });
 };
 
 export const getDashboard = async (req, res) => {
-  const worker = await Worker.findById(req.userId);
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-  if (!worker.currentLocation || !worker.currentLocation.lat) {
-    return res.status(400).json({ error: 'Location not available' });
-  }
+    const lat = parseFloat(req.query.lat);
+    const lng = parseFloat(req.query.lng);
 
-  const envData = await getEnvironmentalData(
-    worker.currentLocation.lat,
-    worker.currentLocation.lng
-  );
+    if (!lat || !lng) {
+      return res.status(400).json({ error: 'Location not available' });
+    }
 
-  const riskData = calculateRiskScore(envData);
+    // --- Baseline IP: store on first login if not set ---
+    if (!user.baseline_ip_location) {
+      const publicIP = req.query.publicIP || null;
+      if (publicIP) {
+        const ipLoc = await resolveIP(publicIP);
+        if (ipLoc) {
+          await db.query('UPDATE users SET baseline_ip_location = $1 WHERE id = $2', [JSON.stringify(ipLoc), req.userId]);
+          user.baseline_ip_location = ipLoc;
+          console.log(`[BASELINE] Stored for ${req.userId}: ${JSON.stringify(ipLoc)}`);
+        }
+      }
+    }
 
-  await RiskSnapshot.create({
-    workerId: req.userId,
-    location: worker.currentLocation,
-    riskScore: riskData.riskScore,
-    riskLevel: riskData.riskLevel,
-    breakdown: {
-      rainfall: envData.rainfall,
+    // --- Spoof detection: GPS coords vs current request IP location ---
+    const publicIP = req.query.publicIP || null;
+    const currentIPLocation = publicIP ? await resolveIP(publicIP) : null;
+    const baselineIpLocation = user.baseline_ip_location || null;
+
+    let spoofCheck = { isSpoofed: false, distanceGpsVsIP: 0, currentIPLocation, baselineIpLocation, gpsLocation: { lat, lng } };
+
+    if (!currentIPLocation) {
+      console.log(`[SPOOF] No public IP provided or unresolvable — skipping spoof check`);
+    }
+
+    if (currentIPLocation) {
+      const distGpsVsIP = haversineKm(lat, lng, currentIPLocation.lat, currentIPLocation.lng);
+      console.log(`[SPOOF] GPS:(${lat},${lng}) IP:${currentIPLocation.city}(${currentIPLocation.lat},${currentIPLocation.lng}) dist:${distGpsVsIP.toFixed(1)}km`);
+
+      const isSpoofed = distGpsVsIP > 50;
+
+      spoofCheck = {
+        isSpoofed,
+        distanceGpsVsIP: parseFloat(distGpsVsIP.toFixed(2)),
+        currentIPLocation,
+        baselineIpLocation,
+        gpsLocation: { lat, lng }
+      };
+
+      if (isSpoofed) {
+        await FraudFlag.create({
+          userId: req.userId,
+          flagType: 'gps_spoofing',
+          severity: distGpsVsIP > 500 ? 'high' : 'medium',
+          description: `GPS (${lat.toFixed(4)},${lng.toFixed(4)}) vs IP location (${currentIPLocation.city}) differ by ${distGpsVsIP.toFixed(0)}km`,
+          evidence: spoofCheck
+        });
+      }
+    }
+
+    const envData = await getEnvironmentalData(lat, lng);
+    const riskData = calculateRiskScore(envData);
+
+    await RiskHistory.create({
+      userId: req.userId,
+      riskScore: riskData.riskScore,
+      riskLevel: riskData.riskLevel,
+      weatherCondition: envData.weatherCondition,
       temperature: envData.temperature,
+      rainfall: envData.rainfall,
       aqi: envData.aqi,
-      traffic: envData.traffic
-    },
-    environmentalData: envData
-  });
+      trafficDelay: envData.traffic,
+      locationLat: lat,
+      locationLng: lng
+    });
 
-  const expectedDailyIncome = worker.avgOrdersPerDay * worker.payoutPerOrder;
-  const protectedIncome = expectedDailyIncome * (worker.plan?.multiplier || 1.0);
-  const atRiskIncome = riskData.riskLevel === 'high' ? expectedDailyIncome * 0.5 : 0;
+    const avgOrders = user.avg_orders_per_day || 15;
+    const payoutPerOrder = user.payout_per_order || 50;
+    const expectedDailyIncome = avgOrders * payoutPerOrder;
+    const protectedIncome = expectedDailyIncome;
+    const atRiskIncome = riskData.riskLevel === 'high' ? expectedDailyIncome * 0.5 : 0;
 
-  const alerts = await getActiveAlerts(req.userId);
+    const activeFraudFlags = await FraudFlag.getActiveCount(req.userId);
 
-  if (riskData.riskLevel === 'high') {
-    const existingHighRiskAlert = alerts.find(a => a.type === 'high_risk');
-    if (!existingHighRiskAlert) {
-      await createAlert(
-        req.userId,
-        'high_risk',
-        'High Risk Detected',
-        `Severe conditions detected in your area. Risk score: ${riskData.riskScore}`,
-        { riskScore: riskData.riskScore, envData },
-        'critical'
-      );
-    }
-
-    const hasDuplicate = await checkDuplicateClaim(req.userId, worker.currentLocation);
-    if (!hasDuplicate && shouldTriggerPayout(riskData.riskScore, riskData.riskLevel)) {
-      await processPayout(req.userId, worker.currentLocation, envData, riskData);
-    }
-  } else {
-    await deactivateAlertsByType(req.userId, 'high_risk');
-  }
-
-  res.json({
-    worker: {
-      name: worker.name,
-      city: worker.city,
-      platform: worker.platform,
-      trustScore: worker.trustScore,
-      trustStatus: worker.trustStatus,
-      plan: worker.plan?.type || 'basic'
-    },
-    risk: {
-      score: riskData.riskScore,
-      level: riskData.riskLevel,
-      breakdown: {
-        rainfall: envData.rainfall,
+    res.json({
+      worker: {
+        name: user.name,
+        city: user.city,
+        platform: user.platform,
+        trustScore: user.trust_score,
+        trustStatus: user.trust_status,
+        plan: 'basic'
+      },
+      risk: {
+        score: riskData.riskScore,
+        level: riskData.riskLevel,
+        breakdown: {
+          rainfall: envData.rainfall,
+          temperature: envData.temperature,
+          aqi: envData.aqi,
+          traffic: envData.traffic
+        }
+      },
+      earnings: {
+        expectedDaily: expectedDailyIncome,
+        protected: protectedIncome,
+        atRisk: atRiskIncome
+      },
+      weather: {
         temperature: envData.temperature,
+        rainfall: envData.rainfall,
+        condition: envData.weatherCondition || 'Clear',
         aqi: envData.aqi,
         traffic: envData.traffic
-      }
-    },
-    earnings: {
-      expectedDaily: expectedDailyIncome,
-      protected: protectedIncome,
-      atRisk: atRiskIncome
-    },
-    weather: {
-      temperature: envData.temperature,
-      rainfall: envData.rainfall,
-      condition: envData.weatherCondition || 'Clear'
-    },
-    gpsStatus: worker.gpsStatus,
-    alerts: alerts.map(a => ({
-      id: a._id,
-      type: a.type,
-      title: a.title,
-      message: a.message,
-      severity: a.severity,
-      isRead: a.isRead
-    })),
-    lastUpdated: new Date()
-  });
+      },
+      spoofCheck,
+      gpsStatus: 'active',
+      alerts: activeFraudFlags > 0 ? [{
+        id: '1',
+        type: 'fraud_warning',
+        title: 'Fraud Flags Detected',
+        message: `You have ${activeFraudFlags} active fraud flags`,
+        severity: 'warning',
+        isRead: false
+      }] : [],
+      lastUpdated: new Date()
+    });
+  } catch (error) {
+    console.error('Get dashboard error:', error);
+    res.status(500).json({ error: 'Failed to fetch dashboard' });
+  }
 };
 
-export const getRiskHistory = async (req, res) => {
-  const { days = 7 } = req.query;
-  
-  const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const history = await RiskSnapshot.find({
-    workerId: req.userId,
-    timestamp: { $gte: cutoffDate }
-  }).sort({ timestamp: -1 });
-
-  res.json(history);
+export const getPayouts = async (req, res) => {
+  try {
+    const payouts = await Payout.findByUserId(req.userId);
+    res.json(payouts);
+  } catch (error) {
+    console.error('Get payouts error:', error);
+    res.status(500).json({ error: 'Failed to fetch payouts' });
+  }
 };
 
-export const markAlertRead = async (req, res) => {
-  const { alertId } = req.params;
-  
-  await markAlertAsRead(alertId);
-  
-  res.json({ success: true });
+export const getClaimStats = async (req, res) => {
+  try {
+    const claims = await Claim.findByUserId(req.userId);
+    const payoutRow = await Payout.getTotalByUser(req.userId);
+    const totalPayout = parseFloat(payoutRow?.completed_amount || 0);
+
+    const approved = claims.filter(c => c.status === 'approved').length;
+    const pending = claims.filter(c => c.status === 'pending').length;
+
+    const byType = claims.reduce((acc, claim) => {
+      const type = claim.disruption_type || claim.weather_condition || 'other';
+      if (!acc[type]) acc[type] = { count: 0, totalAmount: 0 };
+      acc[type].count++;
+      acc[type].totalAmount += parseFloat(claim.amount || 0);
+      return acc;
+    }, {});
+
+    res.json({
+      overall: {
+        totalClaims: claims.length,
+        totalPayout,
+        approvedClaims: approved,
+        pendingClaims: pending,
+        avgPayout: claims.length > 0 ? Math.round(totalPayout / claims.length) : 0
+      },
+      byType: Object.entries(byType).map(([type, data]) => ({
+        _id: type,
+        count: data.count,
+        totalAmount: data.totalAmount
+      }))
+    });
+  } catch (error) {
+    console.error('Get claim stats error:', error);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+};
+
+export const getFraudFlags = async (req, res) => {
+  try {
+    const flags = await FraudFlag.findByUserId(req.userId);
+    res.json(flags);
+  } catch (error) {
+    console.error('Get fraud flags error:', error);
+    res.status(500).json({ error: 'Failed to fetch fraud flags' });
+  }
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://172.16.142.132:5000/api';
 
 // OpenWeather API
 const OPENWEATHER_KEY = '8df98cefdbb8847398d1d45a9a9ec789';
@@ -182,61 +182,20 @@ export const calculateRiskScore = (envData) => {
   return { riskScore, riskLevel };
 };
 
-// Get IP-based location for fraud detection
-export const getIPLocation = async () => {
-  try {
-    const response = await axios.get('https://ipapi.co/json/');
-    return {
-      lat: response.data.latitude,
-      lng: response.data.longitude,
-      city: response.data.city,
-      ip: response.data.ip
-    };
-  } catch (error) {
-    return null;
-  }
-};
+// Get IP-based location for fraud detection — now handled server-side
+export const getIPLocation = async () => null;
 
-// Calculate distance between two points
-const calculateDistance = (lat1, lng1, lat2, lng2) => {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng / 2) * Math.sin(dLng / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-};
-
-// Check for GPS spoofing
-export const checkGPSSpoofing = async (gpsLocation) => {
-  const ipLocation = await getIPLocation();
-  
-  if (!ipLocation) {
-    return { isSpoofed: false, distance: 0, ipLocation: null };
-  }
-
-  const distance = calculateDistance(
-    gpsLocation.lat,
-    gpsLocation.lng,
-    ipLocation.lat,
-    ipLocation.lng
-  );
-
-  const isSpoofed = distance > 50; // More than 50km difference
-
-  return {
-    isSpoofed,
-    distance: parseFloat(distance.toFixed(2)),
-    ipLocation,
-    gpsLocation
-  };
-};
+export const checkGPSSpoofing = async () => ({ isSpoofed: false });
 
 export const workerAPI = {
   register: async (data) => {
-    const response = await api.post('/auth/register', data);
+    // Fetch public IP from mobile's perspective before registering
+    let publicIP = null;
+    try {
+      const ipRes = await axios.get('https://api.ipify.org?format=json', { timeout: 5000 });
+      publicIP = ipRes.data?.ip || null;
+    } catch { /* ignore */ }
+    const response = await api.post('/auth/register', { ...data, publicIP });
     return response.data;
   },
 
@@ -251,142 +210,35 @@ export const workerAPI = {
   },
 
   getDashboard: async (lat, lng) => {
-    // Get real environmental data
-    const envData = await getEnvironmentalData(lat, lng);
-    const riskData = calculateRiskScore(envData);
-    
-    // Check for GPS spoofing
-    const spoofCheck = await checkGPSSpoofing({ lat, lng });
-
-    // Get worker data from localStorage
-    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-    const workerData = JSON.parse(localStorage.getItem('workerData') || '{}');
-
-    const avgOrdersPerDay = 15;
-    const payoutPerOrder = 50;
-    const expectedDaily = avgOrdersPerDay * payoutPerOrder;
-
-    return {
-      worker: {
-        name: onboardingData.name || workerData.name || 'Worker',
-        city: envData.placeName,
-        platform: onboardingData.platform || 'swiggy',
-        trustScore: spoofCheck.isSpoofed ? 60 : 95,
-        trustStatus: spoofCheck.isSpoofed ? 'under_review' : 'trusted',
-        plan: 'basic'
-      },
-      risk: {
-        score: riskData.riskScore,
-        level: riskData.riskLevel,
-        breakdown: {
-          rainfall: envData.rainfall,
-          temperature: envData.temperature,
-          aqi: envData.aqi,
-          traffic: envData.traffic
-        }
-      },
-      earnings: {
-        expectedDaily,
-        protected: expectedDaily,
-        atRisk: riskData.riskLevel === 'high' ? expectedDaily * 0.5 : 0
-      },
-      weather: {
-        temperature: envData.temperature,
-        rainfall: envData.rainfall,
-        condition: envData.weatherCondition,
-        aqi: envData.aqi,
-        traffic: envData.traffic,
-        humidity: envData.humidity
-      },
-      gpsStatus: 'active',
-      location: {
-        lat,
-        lng,
-        placeName: envData.placeName
-      },
-      spoofCheck,
-      alerts: spoofCheck.isSpoofed ? [
-        {
-          id: '1',
-          type: 'gps_spoof',
-          title: 'GPS Spoofing Detected',
-          message: `Location mismatch: ${spoofCheck.distance}km difference between GPS and IP`,
-          severity: 'critical',
-          isRead: false
-        }
-      ] : [],
-      lastUpdated: new Date()
-    };
+    await api.post('/worker/location', { lat, lng });
+    // Send mobile's public IP for server-side spoof detection
+    let publicIP = null;
+    try {
+      const ipRes = await axios.get('https://api.ipify.org?format=json', { timeout: 5000 });
+      publicIP = ipRes.data?.ip || null;
+    } catch { /* ignore */ }
+    const response = await api.get(`/worker/dashboard?lat=${lat}&lng=${lng}${publicIP ? `&publicIP=${publicIP}` : ''}`);
+    return response.data;
   },
 
   getPayouts: async () => {
-    // Mock payouts for now
-    return [
-      {
-        _id: '1',
-        disruptionType: 'rain',
-        payoutAmount: 450,
-        status: 'credited',
-        riskLevel: 'high',
-        riskScore: 85,
-        breakdown: { rainfall: 15, temperature: 28, aqi: 150, traffic: 60 },
-        createdAt: new Date().toISOString()
-      },
-      {
-        _id: '2',
-        disruptionType: 'heat',
-        payoutAmount: 320,
-        status: 'approved',
-        riskLevel: 'medium',
-        riskScore: 65,
-        breakdown: { rainfall: 0, temperature: 42, aqi: 120, traffic: 50 },
-        createdAt: new Date(Date.now() - 86400000).toISOString()
-      }
-    ];
+    const response = await api.get('/worker/payouts');
+    return response.data;
   },
 
   getProfile: async () => {
-    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-    return {
-      _id: 'mock_id_123',
-      name: onboardingData.name || 'Test Worker',
-      phone: onboardingData.phone || '9876543210',
-      city: onboardingData.city || 'Bangalore',
-      platform: onboardingData.platform || 'swiggy',
-      vehicleType: onboardingData.vehicleType || 'bike',
-      licenseNumber: onboardingData.licenseNumber || 'KA01AB1234',
-      avgOrdersPerDay: 15,
-      payoutPerOrder: 50,
-      workingHours: 8,
-      trustScore: 95,
-      trustStatus: 'trusted',
-      gpsStatus: 'active',
-      isActive: true,
-      plan: { type: 'basic', multiplier: 1.0 }
-    };
+    const response = await api.get('/worker/profile');
+    return response.data;
   },
 
   getClaimStats: async () => {
-    return {
-      overall: {
-        totalClaims: 12,
-        totalPayout: 4850,
-        approvedClaims: 10,
-        pendingClaims: 2,
-        avgPayout: 404
-      },
-      byType: [
-        { _id: 'rain', count: 6, totalAmount: 2700 },
-        { _id: 'heat', count: 3, totalAmount: 1200 },
-        { _id: 'aqi', count: 2, totalAmount: 650 },
-        { _id: 'combined', count: 1, totalAmount: 300 }
-      ]
-    };
+    const response = await api.get('/worker/stats');
+    return response.data;
   },
 
   getFraudFlags: async () => {
-    const spoofHistory = JSON.parse(localStorage.getItem('spoofHistory') || '[]');
-    return spoofHistory;
+    const response = await api.get('/worker/fraud-flags');
+    return response.data;
   }
 };
 
