@@ -1,6 +1,9 @@
 import os
+from dotenv import load_dotenv
 from functools import lru_cache
 import requests
+
+load_dotenv()
 
 API_KEY = os.environ.get('OPENWEATHER_API_KEY')
 

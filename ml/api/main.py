@@ -6,6 +6,7 @@ from utils.feature_builder import get_features
 from models.risk_model.predict import predict_risk
 from models.income_model.predict import predict_income
 from typing import Dict, Any
+from api.environment_routes import router as environment_router
 
 
 class TestRiskResponse(BaseModel):
@@ -16,6 +17,8 @@ from services.simulation_service import simulate_full_flow
 
 logging.basicConfig(level=logging.INFO)
 app = FastAPI()
+
+app.include_router(environment_router)
 
 
 class InputPayload(BaseModel):

@@ -14,42 +14,46 @@ export default function Splash() {
       } else {
         navigate('/onboarding');
       }
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-8">
-      {/* Logo */}
-      <div className="mb-8 animate-pulse">
-        <div className="w-32 h-32 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl">
-          <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-800 flex flex-col items-center justify-center p-8 relative overflow-hidden">
+      {/* Background Decoration */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
       </div>
 
-      {/* App Name */}
-      <h1 className="text-5xl font-bold text-white mb-4 tracking-tight">
-        QuickClaim
-      </h1>
+      <div className="relative z-10 text-center">
+        {/* Logo */}
+        <div className="mb-8 animate-fade-in">
+          <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-2xl mx-auto mb-6">
+            <svg className="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-3">
+            QuickClaim
+          </h1>
+          <p className="text-indigo-200 text-lg font-light">
+            Your safety net, when the weather isn't
+          </p>
+        </div>
 
-      {/* Tagline */}
-      <p className="text-xl text-indigo-300 text-center font-light italic mb-12">
-        "Your safety net, when the weather isn't"
-      </p>
-
-      {/* Loading Indicator */}
-      <div className="flex gap-2">
-        <div className="w-3 h-3 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-        <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-        <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        {/* Loading Indicator */}
+        <div className="flex gap-2 justify-center mt-12">
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
 
       {/* Footer */}
       <div className="absolute bottom-8 text-center">
-        <p className="text-gray-400 text-sm">
+        <p className="text-indigo-200 text-sm">
           Parametric Insurance for Gig Workers
         </p>
       </div>

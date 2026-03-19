@@ -1,7 +1,10 @@
 import os
+from dotenv import load_dotenv
 from functools import lru_cache
 import requests
 import logging
+
+load_dotenv()
 
 API_KEY = os.environ.get('OPENWEATHER_API_KEY', 'YOUR_OPENWEATHER_KEY')
 _LOG = logging.getLogger(__name__)

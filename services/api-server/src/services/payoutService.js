@@ -1,44 +1,110 @@
-import { predictRisk, predictIncome, calculatePayout } from './mlService.js';
 import Claim from '../models/Claim.js';
 import Worker from '../models/Worker.js';
+import { getEnvironmentalData, calculateRiskScore, shouldTriggerPayout } from './environmentService.js';
+import { createAlert, deactivateAlertsByType } from './alertService.js';
+import { v4 as uuidv4 } from 'uuid';
 
-export const processClaim = async (workerId, location, weatherData) => {
+export const calculatePayoutAmount = (estimatedLoss, riskScore, planMultiplier = 1.0) => {
+  let baseAmount = estimatedLoss * (riskScore / 100);
+  
+  baseAmount = baseAmount * planMultiplier;
+  
+  return Math.round(baseAmount);
+};
+
+export const checkDuplicateClaim = async (workerId, location, timeWindowHours = 6) => {
+  const cutoffTime = new Date(Date.now() - timeWindowHours * 60 * 60 * 1000);
+  
+  const recentClaim = await Claim.findOne({
+    workerId,
+    createdAt: { $gte: cutoffTime },
+    status: { $in: ['pending', 'approved', 'credited'] }
+  });
+
+  return !!recentClaim;
+};
+
+export const processPayout = async (workerId, location, envData, riskData) => {
   const worker = await Worker.findById(workerId);
   
-  const riskData = {
-    rainfall: weatherData.rainfall || 0,
-    temperature: weatherData.temperature || 25,
-    aqi: weatherData.aqi || 100,
-    traffic: weatherData.traffic || 50,
-    month: new Date().getMonth() + 1
-  };
+  const estimatedLoss = worker.payoutPerOrder * worker.avgOrdersPerDay * 0.5;
+  
+  const payoutAmount = calculatePayoutAmount(
+    estimatedLoss,
+    riskData.riskScore,
+    worker.plan?.multiplier || 1.0
+  );
 
-  const incomeData = {
-    avg_orders_per_day: worker.avgOrdersPerDay,
-    payout_per_order: worker.payoutPerOrder,
-    working_hours: worker.workingHours,
-    city_factor: 1.1,
-    day_of_week: new Date().getDay()
-  };
+  const disruptionType = determineDisruptionType(envData);
 
-  const [riskPrediction, incomePrediction] = await Promise.all([
-    predictRisk(riskData),
-    predictIncome(incomeData)
-  ]);
+  const idempotencyKey = `${workerId}_${Date.now()}_${uuidv4()}`;
 
-  const payoutData = {
-    risk_score: riskPrediction.risk_score,
-    expected_income: incomePrediction.expected_daily_income,
-    disruption_hours: weatherData.disruptionHours || 4
-  };
+  const claim = await Claim.create({
+    workerId,
+    disruptionType,
+    location,
+    riskScore: riskData.riskScore,
+    riskLevel: riskData.riskLevel,
+    breakdown: {
+      rainfall: envData.rainfall,
+      temperature: envData.temperature,
+      aqi: envData.aqi,
+      traffic: envData.traffic
+    },
+    estimatedLoss,
+    payoutAmount,
+    status: 'approved',
+    weatherData: envData,
+    planMultiplier: worker.plan?.multiplier || 1.0,
+    idempotencyKey
+  });
 
-  const payoutResult = await calculatePayout(payoutData);
+  await createAlert(
+    workerId,
+    'payout_credited',
+    'Payout Approved',
+    `₹${payoutAmount} payout approved for ${disruptionType} disruption`,
+    { claimId: claim._id, amount: payoutAmount },
+    'info'
+  );
 
-  return {
-    riskScore: riskPrediction.risk_score,
-    riskLevel: riskPrediction.risk_level,
-    estimatedLoss: incomePrediction.expected_daily_income * (weatherData.disruptionHours || 4) / 8,
-    payoutAmount: payoutResult.payout_amount,
-    weatherData
-  };
+  return claim;
+};
+
+const determineDisruptionType = (envData) => {
+  const factors = [];
+  
+  if (envData.rainfall > 5) factors.push('rain');
+  if (envData.temperature > 38 || envData.temperature < 10) factors.push('heat');
+  if (envData.aqi > 200) factors.push('aqi');
+  if (envData.traffic > 70) factors.push('traffic');
+
+  if (factors.length > 1) return 'combined';
+  if (factors.length === 1) return factors[0];
+  
+  return 'rain';
+};
+
+export const getPayoutHistory = async (workerId, filters = {}) => {
+  const query = { workerId };
+
+  if (filters.status) {
+    query.status = filters.status;
+  }
+
+  if (filters.disruptionType) {
+    query.disruptionType = filters.disruptionType;
+  }
+
+  if (filters.startDate || filters.endDate) {
+    query.createdAt = {};
+    if (filters.startDate) query.createdAt.$gte = new Date(filters.startDate);
+    if (filters.endDate) query.createdAt.$lte = new Date(filters.endDate);
+  }
+
+  const claims = await Claim.find(query)
+    .sort({ createdAt: -1 })
+    .limit(filters.limit || 50);
+
+  return claims;
 };

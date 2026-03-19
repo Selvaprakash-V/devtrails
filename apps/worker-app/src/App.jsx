@@ -5,6 +5,9 @@ import OTPVerification from './pages/OTPVerification';
 import Permissions from './pages/Permissions';
 import Dashboard from './pages/Dashboard';
 import Payouts from './pages/Payouts';
+import Profile from './pages/Profile';
+import Stats from './pages/Stats';
+import FraudFlags from './pages/FraudFlags';
 
 function ProtectedRoute({ children }) {
   const isAuthenticated = !!localStorage.getItem('workerToken');
@@ -42,6 +45,30 @@ function App() {
           element={
             <ProtectedRoute>
               <Payouts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stats"
+          element={
+            <ProtectedRoute>
+              <Stats />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/fraud-flags"
+          element={
+            <ProtectedRoute>
+              <FraudFlags />
             </ProtectedRoute>
           }
         />
