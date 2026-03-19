@@ -1,12 +1,14 @@
 {
   "appId": "com.quickclaim.worker",
-  "appName": "QuickClaim Worker",
+  "appName": "QuickClaim",
   "webDir": "dist",
-  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 2000,
-      "backgroundColor": "#4F46E5",
+      "launchShowDuration": 3000,
+      "backgroundColor": "#ffffff",
       "showSpinner": false
     }
   }

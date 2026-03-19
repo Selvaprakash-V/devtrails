@@ -36,11 +36,7 @@ export default function OTPVerification() {
       return;
     }
 
-    if (otpCode !== '1234') {
-      setError('Invalid OTP. Use 1234');
-      return;
-    }
-
+    // Skip OTP validation - accept any 4-digit code
     setLoading(true);
 
     try {
@@ -107,8 +103,8 @@ export default function OTPVerification() {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Verify OTP</h1>
-            <p className="text-gray-600 text-sm">Enter the 4-digit code sent to your phone</p>
-            <p className="text-indigo-600 text-xs mt-2 font-medium">(Demo: Use 1234)</p>
+            <p className="text-gray-600 text-sm">Enter any 4-digit code</p>
+            <p className="text-indigo-600 text-xs mt-2 font-medium">(Demo: Any 4 digits work)</p>
           </div>
 
           <div className="flex justify-center gap-3 mb-6">

@@ -1,0 +1,104 @@
+<svg width="800" height="1400" viewBox="0 0 800 1400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD4A3;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#FFB3C1;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E8A5E8;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#C8A5E8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A8A5E8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="1400" fill="url(#bgGradient)"/>
+  
+  <!-- Cityscape silhouette -->
+  <g opacity="0.3">
+    <rect x="40" y="900" width="60" height="150" fill="#E8A5E8"/>
+    <rect x="110" y="850" width="80" height="200" fill="#E8A5E8"/>
+    <rect x="200" y="880" width="70" height="170" fill="#FFB3C1"/>
+    <rect x="280" y="820" width="90" height="230" fill="#E8A5E8"/>
+    <rect x="380" y="860" width="75" height="190" fill="#C8A5E8"/>
+    <rect x="465" y="840" width="85" height="210" fill="#C8A5E8"/>
+    <rect x="560" y="870" width="95" height="180" fill="#A8A5E8"/>
+    <rect x="665" y="830" width="100" height="220" fill="#A8A5E8"/>
+  </g>
+  
+  <!-- Shield with checkmark -->
+  <g transform="translate(250, 150)">
+    <path d="M150 0 L280 40 L280 160 Q280 240 150 300 Q20 240 20 160 L20 40 Z" fill="white" opacity="0.9"/>
+    <path d="M150 20 L260 55 L260 160 Q260 230 150 280 Q40 230 40 160 L40 55 Z" fill="url(#shieldGradient)"/>
+    <defs>
+      <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#FFB3C1;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#C8A5E8;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path d="M100 140 L130 170 L200 100" stroke="white" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Plus icon -->
+  <g transform="translate(620, 180)">
+    <rect x="15" y="0" width="10" height="40" fill="white" opacity="0.6"/>
+    <rect x="0" y="15" width="40" height="10" fill="white" opacity="0.6"/>
+  </g>
+  
+  <!-- Sparkles -->
+  <g opacity="0.5">
+    <circle cx="250" cy="250" r="3" fill="white"/>
+    <circle cx="180" cy="350" r="2" fill="white"/>
+    <circle cx="230" cy="380" r="2" fill="white"/>
+    <circle cx="520" cy="280" r="3" fill="white"/>
+    <circle cx="550" cy="360" r="2" fill="white"/>
+  </g>
+  
+  <!-- Delivery person on scooter (left) -->
+  <g transform="translate(80, 700)">
+    <!-- Scooter -->
+    <ellipse cx="40" cy="120" rx="25" ry="25" fill="white" opacity="0.9"/>
+    <ellipse cx="140" cy="120" rx="25" ry="25" fill="white" opacity="0.9"/>
+    <rect x="35" y="80" width="110" height="15" rx="7" fill="white" opacity="0.9"/>
+    <rect x="60" y="50" width="15" height="45" fill="white" opacity="0.9"/>
+    
+    <!-- Delivery box -->
+    <rect x="120" y="40" width="50" height="50" rx="5" fill="white" opacity="0.9"/>
+    
+    <!-- Person -->
+    <circle cx="70" cy="30" r="20" fill="white" opacity="0.9"/>
+    <rect x="55" y="50" width="30" height="40" rx="5" fill="white" opacity="0.9"/>
+    <rect x="45" y="60" width="15" height="35" rx="5" fill="white" opacity="0.9"/>
+    <rect x="75" y="60" width="15" height="35" rx="5" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Person with phone (center) -->
+  <g transform="translate(350, 650)">
+    <circle cx="50" cy="40" r="25" fill="white" opacity="0.9"/>
+    <rect x="30" y="65" width="40" height="60" rx="8" fill="white" opacity="0.9"/>
+    <rect x="20" y="75" width="15" height="50" rx="5" fill="white" opacity="0.9"/>
+    <rect x="75" y="75" width="15" height="40" rx="5" fill="white" opacity="0.9"/>
+    <rect x="25" y="125" width="20" height="60" rx="5" fill="white" opacity="0.9"/>
+    <rect x="55" y="125" width="20" height="60" rx="5" fill="white" opacity="0.9"/>
+    
+    <!-- Phone -->
+    <rect x="80" y="60" width="20" height="35" rx="3" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Cyclist (right) -->
+  <g transform="translate(550, 700)">
+    <!-- Bicycle -->
+    <ellipse cx="30" cy="120" rx="25" ry="25" fill="white" opacity="0.9"/>
+    <ellipse cx="130" cy="120" rx="25" ry="25" fill="white" opacity="0.9"/>
+    <line x1="30" y1="120" x2="80" y2="70" stroke="white" stroke-width="8" opacity="0.9"/>
+    <line x1="130" y1="120" x2="80" y2="70" stroke="white" stroke-width="8" opacity="0.9"/>
+    <line x1="80" y1="70" x2="80" y2="40" stroke="white" stroke-width="8" opacity="0.9"/>
+    
+    <!-- Person -->
+    <circle cx="80" cy="20" r="18" fill="white" opacity="0.9"/>
+    <rect x="65" y="38" width="30" height="35" rx="5" fill="white" opacity="0.9"/>
+    <rect x="55" y="45" width="15" height="40" rx="5" fill="white" opacity="0.9"/>
+    <rect x="90" y="45" width="15" height="40" rx="5" fill="white" opacity="0.9"/>
+    
+    <!-- Backpack -->
+    <rect x="90" y="35" width="25" height="35" rx="5" fill="white" opacity="0.9"/>
+  </g>
+</svg>
