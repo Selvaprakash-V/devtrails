@@ -141,6 +141,15 @@ body.light .mb-card:hover {
   filter: saturate(1.05) contrast(1.05);
 }
 
+.mb-card:nth-child(3) .mb-card__heroImg {
+  object-position: 20% center;
+}
+
+.mb-card:nth-child(4) .mb-card__heroImg {
+  object-position: 21% center;
+  transform: scale(850.);
+}
+
 body.light .mb-card__heroImg {
   opacity: 0.94;
   filter: saturate(1.0) contrast(1.04);
