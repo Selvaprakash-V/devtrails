@@ -413,6 +413,7 @@ export default function MagicBento({
           const baseClass = [
             textAutoHide ? 'mb-card--text-autohide' : '',
             enableBorderGlow ? 'mb-card--border-glow' : '',
+            card.heroImageSrc ? 'mb-card--has-hero' : '',
             card.className || '',
           ]
             .filter(Boolean)
@@ -426,6 +427,12 @@ export default function MagicBento({
 
           const content = (
             <>
+              {card.heroImageSrc && (
+                <div className="mb-card__hero" aria-hidden>
+                  <img className="mb-card__heroImg" src={card.heroImageSrc} alt="" />
+                  <div className="mb-card__heroOverlay" />
+                </div>
+              )}
               <div className="mb-card__header">
                 <div className="mb-card__label">{card.label}</div>
               </div>

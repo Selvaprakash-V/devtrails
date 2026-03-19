@@ -6,6 +6,8 @@ import { MOCK_DASHBOARD } from '../services/mockData';
 import AnimatedList from '../components/ui/AnimatedList';
 import MagicBento from '../components/ui/MagicBento';
 
+import imgWorkersHero from '../assets/magic-bento/images/1.png';
+
 const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
 const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
 
@@ -81,7 +83,7 @@ export default function Dashboard() {
 
   const moduleCards = useMemo(
     () => [
-      { key: 'workers', label: 'Monitoring', title: 'Workers', description: 'Movement, risk, and behavior signals', onClick: () => navigate('/workers') },
+      { key: 'workers', label: 'Monitoring', title: 'Workers', description: 'Movement, risk, and behavior signals', heroImageSrc: imgWorkersHero, onClick: () => navigate('/workers') },
       { key: 'claims', label: 'Engine', title: 'Claims & Payouts', description: 'Triggers, approvals, and payouts', onClick: () => navigate('/claims') },
       { key: 'disrupt', label: 'Intel', title: 'Disruptions', description: 'Live weather & environment events', onClick: () => navigate('/disruptions') },
       { key: 'fraud', label: 'Signals', title: 'Fraud Detection', description: 'Multi-signal alerts and evidence', onClick: () => navigate('/fraud') },
