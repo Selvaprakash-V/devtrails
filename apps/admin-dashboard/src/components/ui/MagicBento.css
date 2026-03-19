@@ -48,7 +48,7 @@
   aspect-ratio: 4 / 3;
   min-height: 180px;
   width: 100%;
-  padding: 1.1rem;
+  padding: 0;
   border-radius: 16px;
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -76,16 +76,23 @@ body.light .mb-card:hover {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 1.1rem;
 }
 
 .mb-card__header,
 .mb-card__content {
   display: flex;
   position: relative;
+  z-index: 3;
+  width: 100%;
 }
 
 .mb-card__header {
   justify-content: space-between;
+  align-items: flex-start;
 }
 
 .mb-card__content {
@@ -111,6 +118,76 @@ body.light .mb-card:hover {
   line-height: 1.25;
   color: var(--text-3);
   margin: 0;
+}
+
+/* Hero image (real PNG/JPG background per tile) */
+.mb-card__hero {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--bg-card);
+}
+
+.mb-card__heroImg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+  opacity: 0.90;
+  filter: saturate(1.05) contrast(1.05);
+}
+
+.mb-card:nth-child(3) .mb-card__heroImg {
+  object-position: 20% center;
+}
+
+.mb-card:nth-child(4) .mb-card__heroImg {
+  object-position: 21% center;
+  transform: scale(850.);
+}
+
+body.light .mb-card__heroImg {
+  opacity: 0.94;
+  filter: saturate(1.0) contrast(1.04);
+}
+
+.mb-card__heroOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.75) 100%);
+}
+
+body.light .mb-card__heroOverlay {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.0) 35%, rgba(0,0,0,0.55) 100%);
+}
+
+.mb-card--has-hero .mb-card__label {
+  color: rgba(255, 255, 255, 0.80);
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+
+.mb-card--has-hero .mb-card__title {
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+.mb-card--has-hero .mb-card__description {
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
+}
+
+body.light .mb-card--has-hero .mb-card__label,
+body.light .mb-card--has-hero .mb-card__title,
+body.light .mb-card--has-hero .mb-card__description {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.55);
 }
 
 .mb-card--text-autohide .mb-card__title,
