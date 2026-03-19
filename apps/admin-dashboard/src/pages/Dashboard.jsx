@@ -3,8 +3,8 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tool
 import { admin } from '../services/api';
 import { MOCK_DASHBOARD } from '../services/mockData';
 
-const chartStyle = { fontSize: '0.75rem', fill: '#64748b' };
-const tooltipStyle = { background: '#1e1e3a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#e2e8f0' };
+const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
+const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
 
 const IcoUsers = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -54,11 +54,11 @@ const StatCard = ({ label, value, sub, variant, Icon }) => (
   <div className={`stat-card ${variant}`}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
       <div>
-        <p style={{ fontSize: '0.7rem', color: '#94a3b8', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</p>
-        <p style={{ fontSize: '1.875rem', fontWeight: 700, color: '#f1f5f9', lineHeight: 1 }}>{value}</p>
-        {sub && <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.375rem' }}>{sub}</p>}
+        <p className="stat-label" style={{ fontSize: '0.7rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</p>
+        <p className="stat-value" style={{ fontSize: '1.875rem', fontWeight: 700, lineHeight: 1 }}>{value}</p>
+        {sub && <p className="stat-sub" style={{ fontSize: '0.75rem', marginTop: '0.375rem' }}>{sub}</p>}
       </div>
-      <span style={{ color: '#475569', marginTop: '0.1rem' }}><Icon /></span>
+      <span className="stat-icon" style={{ marginTop: '0.1rem' }}><Icon /></span>
     </div>
   </div>
 );
@@ -115,7 +115,7 @@ export default function Dashboard() {
                 {data.riskDistribution.map((entry, i) => <Cell key={i} fill={entry.color} />)}
               </Pie>
               <Tooltip contentStyle={tooltipStyle} formatter={(v, n) => [`${v}%`, n]} />
-              <Legend iconType="circle" wrapperStyle={{ fontSize: '0.75rem', color: '#94a3b8' }} />
+              <Legend iconType="circle" wrapperStyle={{ fontSize: '0.75rem', color: 'var(--text-3)' }} />
             </PieChart>
           </ResponsiveContainer>
         </div>

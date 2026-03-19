@@ -64,7 +64,7 @@ export default function Disruptions() {
           { label: 'Cities Impacted',  value: [...new Set(events.map(e => e.city))].length,     color: '#10b981' },
         ].map(({ label, value, color }) => (
           <div key={label} className="glass" style={{ borderRadius: '10px', padding: '1.25rem' }}>
-            <p style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
+            <p className="text-muted" style={{ fontSize: '0.7rem', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
             <p style={{ fontSize: '1.75rem', fontWeight: 700, color }}>{value}</p>
           </div>
         ))}
@@ -88,15 +88,15 @@ export default function Disruptions() {
               <div key={event.id} style={{ display: 'flex', gap: '1rem', position: 'relative' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '24px', flexShrink: 0 }}>
                   <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: s.dot, marginTop: '1.25rem', flexShrink: 0 }} />
-                  {i < events.length - 1 && <div style={{ width: '1px', flex: 1, background: 'rgba(255,255,255,0.06)', minHeight: '2rem' }} />}
+                  {i < events.length - 1 && <div style={{ width: '1px', flex: 1, background: 'var(--border)', minHeight: '2rem' }} />}
                 </div>
                 <div style={{ flex: 1, background: s.bg, border: `1px solid ${s.border}`, borderRadius: '10px', padding: '1rem', marginBottom: '0.75rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <span style={{ color: s.color }}>{TYPE_ICON[event.type] || <IcoAlert />}</span>
                       <div>
-                        <p style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.875rem' }}>{event.type} — {event.city}</p>
-                        <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.15rem' }}>{event.timestamp}</p>
+                        <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{event.type} — {event.city}</p>
+                        <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.15rem' }}>{event.timestamp}</p>
                       </div>
                     </div>
                     <span style={{ padding: '0.2rem 0.75rem', background: s.bg, border: `1px solid ${s.border}`, borderRadius: '20px', fontSize: '0.7rem', color: s.color, fontWeight: 600 }}>
@@ -105,13 +105,13 @@ export default function Disruptions() {
                   </div>
                   <div style={{ display: 'flex', gap: '2rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
                     {[
-                      { k: 'THRESHOLD', v: event.threshold, c: '#94a3b8' },
+                      { k: 'THRESHOLD', v: event.threshold, c: 'var(--text-3)' },
                       { k: 'ACTUAL', v: event.actual, c: s.color },
-                      { k: 'WORKERS AFFECTED', v: event.affectedWorkers.toLocaleString(), c: '#e2e8f0' },
+                      { k: 'WORKERS AFFECTED', v: event.affectedWorkers.toLocaleString(), c: 'var(--text-1)' },
                       { k: 'EVENT ID', v: event.id, c: '#6366f1' },
                     ].map(({ k, v, c }) => (
                       <div key={k}>
-                        <p style={{ fontSize: '0.65rem', color: '#64748b', letterSpacing: '0.05em' }}>{k}</p>
+                        <p className="text-muted" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>{k}</p>
                         <p style={{ fontSize: '0.875rem', color: c, fontWeight: 600, fontFamily: k === 'EVENT ID' ? 'monospace' : 'inherit' }}>{v}</p>
                       </div>
                     ))}

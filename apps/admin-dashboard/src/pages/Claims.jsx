@@ -6,8 +6,8 @@ import { MOCK_CLAIMS } from '../services/mockData';
 const STATUS_CLASS = { Approved: 'badge-approved', Flagged: 'badge-flagged', Rejected: 'badge-rejected', Pending: 'badge-pending', paid: 'badge-approved' };
 const RISK_CLASS = { high: 'badge-rejected', medium: 'badge-flagged', low: 'badge-approved' };
 
-const tooltipStyle = { background: '#1e1e3a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#e2e8f0' };
-const chartStyle = { fontSize: '0.75rem', fill: '#64748b' };
+const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
+const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
 
 const PAYOUT_TREND = [
   { hour: '08h', amount: 8200 }, { hour: '09h', amount: 14500 }, { hour: '10h', amount: 19000 },
@@ -54,7 +54,7 @@ export default function Claims() {
         ].map(({ label, value, color }) => (
           <div key={label} className="glass" style={{ borderRadius: '10px', padding: '1.25rem', textAlign: 'center' }}>
             <p style={{ fontSize: '1.5rem', fontWeight: 700, color }}>{value}</p>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{label}</p>
+            <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -88,12 +88,7 @@ export default function Claims() {
       {/* Filter */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         {['All', 'Pending', 'Approved', 'Flagged', 'Rejected'].map(f => (
-          <button key={f} onClick={() => setFilter(f)} style={{
-            padding: '0.375rem 1rem', borderRadius: '20px', fontSize: '0.8rem', cursor: 'pointer',
-            background: filter === f ? '#4f46e5' : 'rgba(255,255,255,0.05)',
-            border: filter === f ? '1px solid #6366f1' : '1px solid rgba(255,255,255,0.1)',
-            color: filter === f ? '#fff' : '#94a3b8',
-          }}>{f}</button>
+          <button key={f} onClick={() => setFilter(f)} className={`filter-btn${filter === f ? ' active' : ''}`}>{f}</button>
         ))}
       </div>
 
@@ -110,14 +105,14 @@ export default function Claims() {
             {displayed.map(c => (
               <tr key={c._id}>
                 <td style={{ color: '#6366f1', fontFamily: 'monospace', fontSize: '0.8rem' }}>{c._id}</td>
-                <td style={{ fontWeight: 500, color: '#e2e8f0' }}>{c.worker || c.workerId?.name}</td>
-                <td style={{ color: '#94a3b8' }}>{c.city || c.workerId?.city}</td>
+                <td style={{ fontWeight: 500, color: 'var(--text-1)' }}>{c.worker || c.workerId?.name}</td>
+                <td style={{ color: 'var(--text-3)' }}>{c.city || c.workerId?.city}</td>
                 <td>
-                  <span style={{ padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.1)', borderRadius: '4px', fontSize: '0.75rem', color: '#a5b4fc' }}>
+                  <span className="pill-indigo">
                     {c.triggerType || c.disruptionType}
                   </span>
                 </td>
-                <td style={{ fontWeight: 600, color: '#34d399' }}>₹{(c.payoutAmount || 0).toFixed(0)}</td>
+                <td style={{ fontWeight: 600, color: '#10b981' }}>₹{(c.payoutAmount || 0).toFixed(0)}</td>
                 <td>
                   <span className={RISK_CLASS[c.riskLevel] || 'badge-idle'} style={{ padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 500 }}>
                     {c.riskLevel}
@@ -131,10 +126,10 @@ export default function Claims() {
                 <td>
                   {c.status === 'Pending' || c.status === 'pending' ? (
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button onClick={() => handleStatus(c._id, 'Approved')} style={{ padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '4px', color: '#34d399', fontSize: '0.75rem', cursor: 'pointer' }}>✓ Approve</button>
-                      <button onClick={() => handleStatus(c._id, 'Rejected')} style={{ padding: '0.2rem 0.6rem', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '4px', color: '#f87171', fontSize: '0.75rem', cursor: 'pointer' }}>✗ Reject</button>
+                      <button onClick={() => handleStatus(c._id, 'Approved')} style={{ padding: '0.2rem 0.6rem', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '4px', color: '#10b981', fontSize: '0.75rem', cursor: 'pointer' }}>✓ Approve</button>
+                      <button onClick={() => handleStatus(c._id, 'Rejected')} style={{ padding: '0.2rem 0.6rem', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '4px', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer' }}>✗ Reject</button>
                     </div>
-                  ) : <span style={{ color: '#475569', fontSize: '0.75rem' }}>—</span>}
+                  ) : <span style={{ color: 'var(--text-5)', fontSize: '0.75rem' }}>—</span>}
                 </td>
               </tr>
             ))}
