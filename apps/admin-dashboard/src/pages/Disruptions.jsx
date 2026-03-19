@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { admin } from '../services/api';
 import { MOCK_DISRUPTIONS } from '../services/mockData';
+import AnimatedList from '../components/ui/AnimatedList';
 
 const SEV_STYLE = {
   Critical: { bg: 'rgba(239,68,68,0.15)', border: 'rgba(239,68,68,0.3)', color: '#f87171', dot: '#ef4444' },
@@ -50,6 +51,12 @@ export default function Disruptions() {
   const totalAffected = events.reduce((s, e) => s + e.affectedWorkers, 0);
   const critical = events.filter(e => e.severity === 'Critical').length;
 
+  const systemInsights = [
+    'Rain threshold exceeded in 3 zones — automatic payout triggers activated for 1,240 workers',
+    'Cyclone warning in Chennai — 2,100 workers eligible for emergency payout tier',
+    'AQI 287 in Mumbai exceeds safe threshold — outdoor work advisory issued',
+  ];
+
   return (
     <div>
       <p className="page-title">Disruption Intelligence</p>
@@ -73,9 +80,14 @@ export default function Disruptions() {
       {/* Insight Banner */}
       <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
         <p className="section-title">System Insights</p>
-        <div className="insight-banner">Rain threshold exceeded in 3 zones — automatic payout triggers activated for 1,240 workers</div>
-        <div className="insight-banner">Cyclone warning in Chennai — 2,100 workers eligible for emergency payout tier</div>
-        <div className="insight-banner">AQI 287 in Mumbai exceeds safe threshold — outdoor work advisory issued</div>
+        <AnimatedList
+          items={systemInsights}
+          maxHeight={190}
+          showGradients
+          enableArrowNavigation
+          displayScrollbar
+          ariaLabel="System insights"
+        />
       </div>
 
       {/* Event Timeline */}

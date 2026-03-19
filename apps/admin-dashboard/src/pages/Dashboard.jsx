@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 import { admin } from '../services/api';
 import { MOCK_DASHBOARD } from '../services/mockData';
+import AnimatedList from '../components/ui/AnimatedList';
+import MagicBento from '../components/ui/MagicBento';
 
 const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
 const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
@@ -65,6 +68,7 @@ const StatCard = ({ label, value, sub, variant, Icon }) => (
 
 export default function Dashboard() {
   const [data, setData] = useState(MOCK_DASHBOARD);
+  const navigate = useNavigate();
 
   useEffect(() => {
     admin.getDashboard()
@@ -74,6 +78,18 @@ export default function Dashboard() {
 
   // Strip emojis from insight strings
   const cleanInsights = data.insights.map(s => s.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').trim());
+
+  const moduleCards = useMemo(
+    () => [
+      { key: 'workers', label: 'Monitoring', title: 'Workers', description: 'Movement, risk, and behavior signals', onClick: () => navigate('/workers') },
+      { key: 'claims', label: 'Engine', title: 'Claims & Payouts', description: 'Triggers, approvals, and payouts', onClick: () => navigate('/claims') },
+      { key: 'disrupt', label: 'Intel', title: 'Disruptions', description: 'Live weather & environment events', onClick: () => navigate('/disruptions') },
+      { key: 'fraud', label: 'Signals', title: 'Fraud Detection', description: 'Multi-signal alerts and evidence', onClick: () => navigate('/fraud') },
+      { key: 'defense', label: 'Security', title: 'Defense Panel', description: 'Adversarial resilience and clusters', onClick: () => navigate('/defense') },
+      { key: 'dash', label: 'Overview', title: 'Dashboard', description: 'Platform health at a glance', onClick: () => navigate('/dashboard') },
+    ],
+    [navigate]
+  );
 
   return (
     <div>
@@ -85,12 +101,35 @@ export default function Dashboard() {
         {CARDS(data).map(card => <StatCard key={card.label} {...card} />)}
       </div>
 
+      {/* Quick Modules */}
+      <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+        <p className="section-title">Quick Modules</p>
+        <MagicBento
+          cards={moduleCards}
+          textAutoHide={true}
+          enableStars
+          enableSpotlight
+          enableBorderGlow={true}
+          enableTilt={false}
+          enableMagnetism={false}
+          clickEffect
+          spotlightRadius={400}
+          particleCount={12}
+          glowColor="79, 70, 229"
+          disableAnimations={false}
+        />
+      </div>
+
       {/* Insights */}
       <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
         <p className="section-title">Live Insights</p>
-        {cleanInsights.map((insight, i) => (
-          <div key={i} className="insight-banner">{insight}</div>
-        ))}
+        <AnimatedList
+          items={cleanInsights}
+          maxHeight={190}
+          showGradients
+          enableArrowNavigation
+          displayScrollbar
+        />
       </div>
 
       {/* Charts Row */}
