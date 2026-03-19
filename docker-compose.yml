@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  api-server:
+    build:
+      context: ./services/api-server
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/quickclaim
+      - ML_SERVICE_URL=http://ml-service:8000
+    depends_on:
+      - mongodb
+      - ml-service
+
+  ml-service:
+    build:
+      context: ./ml
+    ports:
+      - "8000:8000"
+
+  worker-app:
+    build:
+      context: ./apps/worker-app
+    ports:
+      - "3000:3000"
+
+  admin-dashboard:
+    build:
+      context: ./apps/admin-dashboard
+    ports:
+      - "3001:3001"
+
+volumes:
+  mongo-data:

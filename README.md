@@ -1,141 +1,180 @@
-#  DevTrails — AI Parametric Income Insurance for Gig Workers
+# QuickClaim - Parametric Insurance Platform
 
-An **AI-powered parametric insurance platform** designed to protect food delivery partners (Swiggy, Zomato) from **income loss caused by environmental and civic disruptions**.
+Production-grade parametric insurance platform for gig workers with ML-powered risk prediction and fraud detection.
 
-This project was built for **Guidewire DEVTrails Hackathon 2026**.
+## 🏗️ Architecture
 
-The platform automatically detects disruptions such as heavy rain, extreme heat, or poor air quality and **triggers instant compensation payouts without requiring manual claims**.
+- **Frontend**: React + Vite + Tailwind CSS
+- **Backend**: Node.js + Express + MongoDB
+- **ML Service**: Python + FastAPI + Scikit-learn
+- **Fraud Detection**: GPS spoofing, location anomaly detection
 
----
-
-#  Problem Statement
-
-India's gig economy relies heavily on delivery workers from platforms such as:
-
-- Swiggy
-- Zomato
-- Dunzo
-- Blinkit
-- Amazon
-- Zepto
-
-These workers earn **per delivery**, meaning their income depends on how many orders they complete daily.
-
-However, external disruptions often prevent them from working:
-
--  Heavy rain and flooding
--  Extreme heat waves
--  Severe air pollution
--  Curfews and civic shutdowns
-
-When such events occur, workers may lose **20–30% of their weekly income**.
-
-Currently, there is **no automated income protection system** for gig workers against these disruptions.
-
----
-
-<img width="1536" height="1024" alt="ChatGPT Image Mar 10, 2026, 09_53_19 PM" src="https://github.com/user-attachments/assets/dd7324e7-1d6e-42ad-b414-1361908b7ef6" />
-
----
-
-### Rahul’s Everyday Routine
-
-Every morning at **9:00 AM**, Rahul logs into the Swiggy delivery partner app and begins his shift.  
-His day usually involves riding across different neighborhoods, picking up food from restaurants, and delivering it to customers.
-
-On a typical day:
-- Rahul completes around **22 deliveries**
-- Earns roughly **₹800**
-- Covers several kilometers across the city
-
-For Rahul, **every delivery matters**. His income is directly tied to how many orders he completes.
----
-But some days don't go as planned.
-
-A sudden **rainstorm floods the streets of Chennai**.  
-Traffic slows down. Restaurants pause deliveries. Riders struggle to navigate through waterlogged roads.
-Rahul checks his phone — **new orders stop coming in**.
-What should have been a productive afternoon quickly turns into **lost working hours**.
+## 📁 Project Structure
 
 ```
-Expected earnings for the day : ₹800
-Actual earnings after disruption : ₹350
-Income lost : ₹450
+devtrails/
+├── apps/
+│   ├── worker-app/          # Gig worker mobile/web app
+│   └── admin-dashboard/     # Admin panel
+├── services/
+│   └── api-server/          # Node.js backend
+├── ml/                      # ML microservice (FastAPI)
+└── docker-compose.yml
 ```
 
-And for gig workers like Rahul, **lost hours mean lost income**.
+## 🚀 Quick Start
 
----
+### Prerequisites
+- Node.js 18+
+- Python 3.9+
+- MongoDB
 
-Our **Parametric Insurance Platform** acts as a safety net.
+### 1. Setup API Server
 
-Instead of waiting for manual claims or paperwork, the system continuously monitors disruption signals such as:
-
-- Heavy rainfall  
-- Extreme heat  
-- Severe air pollution  
-- Curfews or city shutdowns  
-When these disruptions cross predefined thresholds in Rahul’s delivery zone, the platform automatically triggers compensation.
-```
-Rainfall detected > 80mm
-Worker location: Chennai
-Active insurance policy: Yes
-```
-**Claim generated automatically**  
-**₹350 payout credited instantly**
-
-For gig workers like Rahul, income is unpredictable and vulnerable to external disruptions.
-
-On certain days, external disruptions severely affect delivery workers like Rahul.
-As a result, Rahul is forced to stop working and **loses a large portion of his expected income for the day**.
-
- Disruption Impact Flow
+```bash
+cd services/api-server
+npm install
+cp .env.example .env
+npm run dev
 ```
 
-Heavy Rainfall
-      │
-      ▼
-Flooded Roads
-      │
-      ▼
-Delivery Orders Drop
-      │
-      ▼
-Rahul Stops Deliveries
-      │
-      ▼
-Income Loss for the Day
-```
-This chain reaction shows how **external disruptions directly affect gig worker income**.
+### 2. Setup ML Service
 
-A disruption can significantly reduce Rahul's daily earnings.
-```
-Normal Day Earnings
-████████████████████  ₹800
-
-Rain Disruption Day
-█████████░░░░░░░░░░░  ₹350
-```
-```
-22 | ███████████████████
-20 |
-15 |
-10 | ███████
- 5 |
- 0 |____________________
-     Normal     Rain Day
+```bash
+cd ml
+pip install -r requirements.txt
+python api/main.py
 ```
 
-Even losing a few working hours can drastically reduce Rahul's income for that day.
+### 3. Setup Worker App
 
----
+```bash
+cd apps/worker-app
+npm install
+npm run dev
+```
 
-Gig workers rely on **consistent daily deliveries** to earn a stable income.
+### 4. Setup Admin Dashboard
 
-When unexpected disruptions occur:
-- Workers lose **valuable working hours**
-- Daily earnings drop sharply
-- Weekly income becomes unpredictable
+```bash
+cd apps/admin-dashboard
+npm install
+npm run dev
+```
 
-Unlike salaried jobs, gig workers have **no built-in financial protection** against such events.
-This is the gap that **DevTrails Parametric Insurance** aims to solve.
+## 🔑 Default Credentials
+
+**Admin Login:**
+- Username: `admin`
+- Password: `admin123`
+
+**Worker OTP:**
+- Any phone number
+- OTP: `1234`
+
+## 🌐 Endpoints
+
+- Worker App: http://localhost:3000
+- Admin Dashboard: http://localhost:3001
+- API Server: http://localhost:5000
+- ML Service: http://localhost:8000
+
+## 📡 API Routes
+
+### Auth
+- POST `/api/auth/login` - Worker login
+- POST `/api/auth/register` - Worker registration
+- POST `/api/auth/admin/login` - Admin login
+
+### Worker
+- GET `/api/worker/profile` - Get profile
+- POST `/api/worker/location` - Update location
+- GET `/api/worker/dashboard` - Get dashboard data
+
+### Claims
+- POST `/api/claims` - Create claim (with fraud check)
+- GET `/api/claims` - Get my claims
+- GET `/api/claims/:id` - Get claim by ID
+
+### Admin
+- GET `/api/admin/dashboard` - Dashboard stats
+- GET `/api/admin/claims` - All claims
+- PATCH `/api/admin/claims/:id` - Update claim status
+- GET `/api/admin/fraud-alerts` - Fraud alerts
+- PATCH `/api/admin/fraud-alerts/:id/resolve` - Resolve alert
+- GET `/api/admin/workers` - All workers
+
+## 🤖 ML Models
+
+### Risk Model
+Predicts disruption risk based on:
+- Rainfall, Temperature, AQI, Traffic, Month
+
+### Income Model
+Estimates expected income based on:
+- Orders per day, Payout per order, Working hours, City factor
+
+### Payout Calculation
+Calculates payout amount based on:
+- Risk score, Expected income, Disruption hours
+
+## 🚨 Fraud Detection
+
+Backend validates:
+- GPS vs IP location mismatch (>20km)
+- Invalid coordinates (0,0)
+- Speed anomaly (>120 km/h)
+- Rapid claims (<6 hours)
+- Location jumps (>50km in <1 hour)
+
+## 🐳 Docker Deployment
+
+```bash
+docker-compose up --build
+```
+
+## 📝 Environment Variables
+
+### API Server (.env)
+```
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/quickclaim
+JWT_SECRET=your_secret_key
+ML_SERVICE_URL=http://localhost:8000
+OPENWEATHER_API_KEY=your_api_key (optional)
+```
+
+## 🧪 Testing
+
+1. Register a worker
+2. Login and view dashboard
+3. Create a claim
+4. Check admin dashboard for claim
+5. Test fraud detection by creating rapid claims
+
+## 📊 Features
+
+✅ Real-time risk prediction
+✅ Automated payout calculation
+✅ GPS-based fraud detection
+✅ Admin claim management
+✅ Worker dashboard with earnings
+✅ Fraud alert system
+✅ Location tracking
+✅ Weather integration
+
+## 🔒 Security
+
+- JWT authentication
+- GPS spoofing detection
+- IP validation
+- Rate limiting on claims
+- Admin-only routes
+
+## 📈 Future Enhancements
+
+- ML-based fraud model
+- Real-time notifications
+- Payment gateway integration
+- Mobile app (React Native)
+- Advanced analytics
