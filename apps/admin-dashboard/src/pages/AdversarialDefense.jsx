@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine, Cell } from 'recharts';
 import { MOCK_ADVERSARIAL } from '../services/mockData';
+import AnimatedList from '../components/ui/AnimatedList';
 
 const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
 const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
@@ -163,22 +164,30 @@ export default function AdversarialDefense() {
         <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '1.25rem' }}>
           System avoids penalizing genuine workers by using multiple signals, progressive trust scoring, and manual review for borderline cases.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
-          {STRATEGIES.map(({ num, title, Icon, color, desc, tag }) => (
-            <div key={num} style={{ display: 'flex', gap: '0.875rem', padding: '0.875rem', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '10px' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color, flexShrink: 0 }}>
-                <Icon />
+        <AnimatedList
+          items={STRATEGIES}
+          className="al-flat"
+          maxHeight={520}
+          showGradients
+          displayScrollbar
+          enableArrowNavigation
+          ariaLabel="Defense strategy matrix"
+          getItemKey={(item) => item.num}
+          renderItem={(item) => (
+            <div style={{ display: 'flex', gap: '0.875rem', padding: '0.875rem', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '10px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${item.color}18`, border: `1px solid ${item.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.color, flexShrink: 0 }}>
+                <item.Icon />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{title}</p>
-                  <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', background: `${color}18`, color, borderRadius: '3px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
+                  <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{item.title}</p>
+                  <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', background: `${item.color}18`, color: item.color, borderRadius: '3px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>{item.tag}</span>
                 </div>
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-4)', marginTop: '0.25rem', lineHeight: 1.5 }}>{desc}</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-4)', marginTop: '0.25rem', lineHeight: 1.5 }}>{item.desc}</p>
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        />
       </div>
     </div>
   );

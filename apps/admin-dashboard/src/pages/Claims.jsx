@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { admin } from '../services/api';
 import { MOCK_CLAIMS } from '../services/mockData';
+import AnimatedList from '../components/ui/AnimatedList';
 
 const STATUS_CLASS = { Approved: 'badge-approved', Flagged: 'badge-flagged', Rejected: 'badge-rejected', Pending: 'badge-pending', paid: 'badge-approved' };
 const RISK_CLASS = { high: 'badge-rejected', medium: 'badge-flagged', low: 'badge-approved' };
@@ -38,6 +39,10 @@ export default function Claims() {
 
   const displayed = filter === 'All' ? claims : claims.filter(c => (c.status || '').toLowerCase() === filter.toLowerCase());
   const totalPayout = claims.reduce((s, c) => s + (c.payoutAmount || 0), 0);
+
+  const recentActivity = displayed
+    .slice(0, 10)
+    .map(c => `${c._id} · ${c.worker || c.workerId?.name} (${c.city || c.workerId?.city}) · ${c.triggerType || c.disruptionType} · ₹${(c.payoutAmount || 0).toFixed(0)} · ${c.status}`);
 
   return (
     <div>
@@ -90,6 +95,19 @@ export default function Claims() {
         {['All', 'Pending', 'Approved', 'Flagged', 'Rejected'].map(f => (
           <button key={f} onClick={() => setFilter(f)} className={`filter-btn${filter === f ? ' active' : ''}`}>{f}</button>
         ))}
+      </div>
+
+      {/* Recent Activity */}
+      <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem', marginBottom: '1rem' }}>
+        <p className="section-title">Recent Claim Activity</p>
+        <AnimatedList
+          items={recentActivity}
+          maxHeight={220}
+          showGradients
+          displayScrollbar
+          enableArrowNavigation
+          ariaLabel="Recent claim activity"
+        />
       </div>
 
       {/* Table */}

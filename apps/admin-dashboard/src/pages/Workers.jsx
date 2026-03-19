@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { admin } from '../services/api';
 import { MOCK_WORKERS } from '../services/mockData';
+import AnimatedList from '../components/ui/AnimatedList';
 
 const STATUS_CLASS = { Active: 'badge-active', Idle: 'badge-idle', Suspicious: 'badge-suspicious' };
 
@@ -105,19 +106,34 @@ export default function Workers() {
       {/* Red Flag Signals */}
       <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem', marginTop: '1.5rem' }}>
         <p className="section-title">Automated Red Flag Signals</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-          {[
+        <AnimatedList
+          items={[
             { title: 'Location Cluster', desc: '23 workers sharing identical GPS coordinates in Zone 4-B', severity: 'critical' },
-            { title: 'No Movement',      desc: '7 workers with zero movement for 4+ hours while claiming',  severity: 'high' },
-            { title: 'Instant Jump',     desc: '3 workers teleported 90km in under 3 minutes',              severity: 'high' },
-          ].map(({ title, desc, severity }) => (
-            <div key={title} style={{ background: severity === 'critical' ? 'rgba(239,68,68,0.08)' : 'rgba(245,158,11,0.08)', border: `1px solid ${severity === 'critical' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)'}`, borderRadius: '10px', padding: '1rem' }}>
-              <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: severity === 'critical' ? '#ef4444' : '#f59e0b', marginBottom: '0.625rem' }} />
-              <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{title}</p>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginTop: '0.25rem' }}>{desc}</p>
+            { title: 'No Movement', desc: '7 workers with zero movement for 4+ hours while claiming', severity: 'high' },
+            { title: 'Instant Jump', desc: '3 workers teleported 90km in under 3 minutes', severity: 'high' },
+          ]}
+          maxHeight={240}
+          showGradients
+          displayScrollbar={false}
+          enableArrowNavigation
+          ariaLabel="Automated red flag signals"
+          getItemKey={(item) => item.title}
+          renderItem={(item) => (
+            <div>
+              <div
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: item.severity === 'critical' ? '#ef4444' : '#f59e0b',
+                  marginBottom: '0.625rem',
+                }}
+              />
+              <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{item.title}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginTop: '0.25rem' }}>{item.desc}</p>
             </div>
-          ))}
-        </div>
+          )}
+        />
       </div>
     </div>
   );
