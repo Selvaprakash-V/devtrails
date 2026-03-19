@@ -8,7 +8,7 @@ const RiskBar = ({ score }) => {
   const color = score >= 70 ? '#ef4444' : score >= 40 ? '#f59e0b' : '#10b981';
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-      <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px' }}>
+      <div style={{ flex: 1, height: '6px', background: 'var(--border)', borderRadius: '3px' }}>
         <div style={{ width: `${score}%`, height: '100%', background: color, borderRadius: '3px', transition: 'width 0.5s' }} />
       </div>
       <span style={{ fontSize: '0.75rem', color, fontWeight: 600, minWidth: '28px' }}>{score}</span>
@@ -39,8 +39,8 @@ export default function Workers() {
         <div className="pulse-red" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '10px', padding: '0.875rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444', flexShrink: 0 }} />
           <div>
-            <p style={{ fontWeight: 600, color: '#f87171', fontSize: '0.875rem' }}>{suspicious.length} Suspicious Workers Detected</p>
-            <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.15rem' }}>
+            <p style={{ fontWeight: 600, color: '#ef4444', fontSize: '0.875rem' }}>{suspicious.length} Suspicious Workers Detected</p>
+            <p className="text-subtle" style={{ fontSize: '0.8rem', marginTop: '0.15rem' }}>
               {suspicious.map(w => w.name).join(', ')} — same location cluster detected
             </p>
           </div>
@@ -57,7 +57,7 @@ export default function Workers() {
         ].map(({ label, value, color }) => (
           <div key={label} className="glass" style={{ borderRadius: '10px', padding: '1rem', textAlign: 'center' }}>
             <p style={{ fontSize: '1.75rem', fontWeight: 700, color }}>{value}</p>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{label}</p>
+            <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -65,12 +65,7 @@ export default function Workers() {
       {/* Filter Tabs */}
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
         {['All', 'Active', 'Idle', 'Suspicious'].map(f => (
-          <button key={f} onClick={() => setFilter(f)} style={{
-            padding: '0.375rem 1rem', borderRadius: '20px', fontSize: '0.8rem', cursor: 'pointer',
-            background: filter === f ? '#4f46e5' : 'rgba(255,255,255,0.05)',
-            border: filter === f ? '1px solid #6366f1' : '1px solid rgba(255,255,255,0.1)',
-            color: filter === f ? '#fff' : '#94a3b8',
-          }}>{f}</button>
+          <button key={f} onClick={() => setFilter(f)} className={`filter-btn${filter === f ? ' active' : ''}`}>{f}</button>
         ))}
       </div>
 
@@ -87,15 +82,15 @@ export default function Workers() {
             {displayed.map(w => (
               <tr key={w._id}>
                 <td style={{ color: '#6366f1', fontFamily: 'monospace', fontSize: '0.8rem' }}>{w._id}</td>
-                <td style={{ fontWeight: 500, color: '#e2e8f0' }}>{w.name}</td>
+                <td style={{ fontWeight: 500, color: 'var(--text-1)' }}>{w.name}</td>
                 <td>
-                  <span style={{ padding: '0.2rem 0.6rem', background: 'rgba(99,102,241,0.15)', borderRadius: '4px', fontSize: '0.75rem', color: '#a5b4fc' }}>
+                  <span className="pill-indigo">
                     {w.platform}
                   </span>
                 </td>
-                <td style={{ color: '#94a3b8' }}>{w.city}</td>
+                <td style={{ color: 'var(--text-3)' }}>{w.city}</td>
                 <td style={{ minWidth: '140px' }}><RiskBar score={w.riskScore} /></td>
-                <td style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: 'monospace' }}>{w.location}</td>
+                <td style={{ fontSize: '0.75rem', color: 'var(--text-4)', fontFamily: 'monospace' }}>{w.location}</td>
                 <td>
                   <span className={`${STATUS_CLASS[w.status] || 'badge-idle'}`} style={{ padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 500 }}>
                     {w.status}
@@ -118,8 +113,8 @@ export default function Workers() {
           ].map(({ title, desc, severity }) => (
             <div key={title} style={{ background: severity === 'critical' ? 'rgba(239,68,68,0.08)' : 'rgba(245,158,11,0.08)', border: `1px solid ${severity === 'critical' ? 'rgba(239,68,68,0.2)' : 'rgba(245,158,11,0.2)'}`, borderRadius: '10px', padding: '1rem' }}>
               <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: severity === 'critical' ? '#ef4444' : '#f59e0b', marginBottom: '0.625rem' }} />
-              <p style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.875rem' }}>{title}</p>
-              <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>{desc}</p>
+              <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{title}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginTop: '0.25rem' }}>{desc}</p>
             </div>
           ))}
         </div>

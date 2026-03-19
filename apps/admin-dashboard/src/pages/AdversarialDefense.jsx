@@ -1,8 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceLine, Cell } from 'recharts';
 import { MOCK_ADVERSARIAL } from '../services/mockData';
 
-const tooltipStyle = { background: '#1e1e3a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#e2e8f0' };
-const chartStyle = { fontSize: '0.75rem', fill: '#64748b' };
+const tooltipStyle = { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-2)' };
+const chartStyle = { fontSize: '0.75rem', fill: 'var(--text-4)' };
 
 const IcoLocation = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -66,10 +66,10 @@ export default function AdversarialDefense() {
     <div>
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(79,70,229,0.08))', border: '1px solid rgba(99,102,241,0.2)', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-        <p style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f1f5f9', marginBottom: '0.25rem' }}>Adversarial Defense Panel</p>
-        <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem' }}>Multi-signal defense system capable of detecting coordinated fraud rings</p>
+        <p style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-1)', marginBottom: '0.25rem' }}>Adversarial Defense Panel</p>
+        <p className="text-muted" style={{ fontSize: '0.875rem', marginBottom: '1rem' }}>Multi-signal defense system capable of detecting coordinated fraud rings</p>
         <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '8px', padding: '0.75rem 1rem' }}>
-          <p style={{ fontSize: '0.875rem', color: '#fca5a5', fontStyle: 'italic' }}>
+          <p style={{ fontSize: '0.875rem', color: '#ef4444', fontStyle: 'italic' }}>
             "We moved from single-point GPS validation to a multi-signal adversarial defense system capable of detecting coordinated fraud rings."
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function AdversarialDefense() {
         ].map(({ label, value, color }) => (
           <div key={label} className="glass" style={{ borderRadius: '10px', padding: '1.25rem', textAlign: 'center' }}>
             <p style={{ fontSize: '1.75rem', fontWeight: 700, color }}>{value}</p>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{label}</p>
+            <p className="text-muted" style={{ fontSize: '0.75rem', marginTop: '0.25rem' }}>{label}</p>
           </div>
         ))}
       </div>
@@ -94,7 +94,7 @@ export default function AdversarialDefense() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
         <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem' }}>
           <p className="section-title">Fraud Score Distribution</p>
-          <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.75rem' }}>Workers by score range — right tail = attack zone</p>
+          <p className="text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.75rem' }}>Workers by score range — right tail = attack zone</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={fraudScoreHistogram} barSize={36}>
               <XAxis dataKey="range" tick={chartStyle} axisLine={false} tickLine={false} />
@@ -109,7 +109,7 @@ export default function AdversarialDefense() {
 
         <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem' }}>
           <p className="section-title">Claim Burst Detection</p>
-          <p style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.75rem' }}>
+          <p className="text-muted" style={{ fontSize: '0.75rem', marginBottom: '0.75rem' }}>
             <span style={{ color: '#6366f1' }}>— Normal</span>&nbsp;&nbsp;
             <span style={{ color: '#ef4444' }}>— Burst (Attack)</span>
           </p>
@@ -133,23 +133,23 @@ export default function AdversarialDefense() {
           {clusterData.map(cluster => (
             <div key={cluster.id} style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: '10px', padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                <p style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '0.875rem' }}>Ring #{cluster.id} — {cluster.city}</p>
+                <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>Ring #{cluster.id} — {cluster.city}</p>
                 <span style={{ fontSize: '0.7rem', padding: '0.15rem 0.5rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', borderRadius: '4px', fontWeight: 600 }}>
                   Score: {cluster.riskScore}
                 </span>
               </div>
-              <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.75rem' }}>{cluster.type}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-3)', marginBottom: '0.75rem' }}>{cluster.type}</p>
               <div style={{ display: 'flex', gap: '1.5rem' }}>
                 <div>
-                  <p style={{ fontSize: '0.65rem', color: '#64748b', letterSpacing: '0.05em' }}>WORKERS</p>
+                  <p className="text-muted" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>WORKERS</p>
                   <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ef4444' }}>{cluster.workers}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.65rem', color: '#64748b', letterSpacing: '0.05em' }}>COORDINATES</p>
-                  <p style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: 'monospace', marginTop: '0.2rem' }}>{cluster.lat}°N, {cluster.lng}°E</p>
+                  <p className="text-muted" style={{ fontSize: '0.65rem', letterSpacing: '0.05em' }}>COORDINATES</p>
+                  <p className="text-muted" style={{ fontSize: '0.75rem', fontFamily: 'monospace', marginTop: '0.2rem' }}>{cluster.lat}°N, {cluster.lng}°E</p>
                 </div>
               </div>
-              <div style={{ marginTop: '0.75rem', height: '3px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px' }}>
+              <div style={{ marginTop: '0.75rem', height: '3px', background: 'var(--border)', borderRadius: '2px' }}>
                 <div style={{ width: `${cluster.riskScore}%`, height: '100%', background: 'linear-gradient(90deg, #f59e0b, #ef4444)', borderRadius: '2px' }} />
               </div>
             </div>
@@ -160,21 +160,21 @@ export default function AdversarialDefense() {
       {/* Defense Strategy Matrix */}
       <div className="glass" style={{ borderRadius: '12px', padding: '1.25rem' }}>
         <p className="section-title">Defense Strategy Matrix</p>
-        <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1.25rem' }}>
+        <p className="text-muted" style={{ fontSize: '0.8rem', marginBottom: '1.25rem' }}>
           System avoids penalizing genuine workers by using multiple signals, progressive trust scoring, and manual review for borderline cases.
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
           {STRATEGIES.map(({ num, title, Icon, color, desc, tag }) => (
-            <div key={num} style={{ display: 'flex', gap: '0.875rem', padding: '0.875rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px' }}>
+            <div key={num} style={{ display: 'flex', gap: '0.875rem', padding: '0.875rem', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: '10px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: `${color}18`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color, flexShrink: 0 }}>
                 <Icon />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <p style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.875rem' }}>{title}</p>
+                  <p style={{ fontWeight: 600, color: 'var(--text-1)', fontSize: '0.875rem' }}>{title}</p>
                   <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', background: `${color}18`, color, borderRadius: '3px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>{tag}</span>
                 </div>
-                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem', lineHeight: 1.5 }}>{desc}</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-4)', marginTop: '0.25rem', lineHeight: 1.5 }}>{desc}</p>
               </div>
             </div>
           ))}
