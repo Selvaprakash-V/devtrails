@@ -157,3 +157,20 @@ For comprehensive technical details about our enterprise-grade backend architect
 **👉 [View Complete Backend Architecture Documentation](BACKEND_ARCHITECTURE.md)**
 
 ---
+
+## 🏗️ Payment & Policy Architecture
+
+For comprehensive technical details about our production-ready payment and insurance system, including:
+
+- Secure Razorpay payment flow and verification pipeline  
+- Policy lifecycle management and activation logic  
+- PCI-DSS compliant transaction handling  
+- Scalable payment infrastructure for high-volume usage  
+- Built-in risk management and fraud prevention engine  
+- Reinsurance calculations and exposure control  
+
+👉 [View Complete Payment & Policy Documentation](./PAYMENT_AND_POLICIES.md)
+
+---
+
+
