@@ -185,6 +185,8 @@ For comprehensive technical details about our production-ready payment and insur
 
 👉 [View Complete Payment & Policy Documentation](./PAYMENT_AND_POLICIES.md)
 
+---
+
 [View our Complete Documentation](https://drive.google.com/drive/folders/1ucDp9SCIbwpoGPyv10HHfK1pD0aWWqf5)
 
 ---
