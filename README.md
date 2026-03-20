@@ -158,6 +158,20 @@ For comprehensive technical details about our enterprise-grade backend architect
 
 ---
 
+🛡️ **Adversarial Defense & Anti‑Spoofing Strategy Documentation**  
+
+For in‑depth technical details about our adversarial‑resilient defense stack, including:  
+
+- Multi‑layer behavioral fingerprinting pipelines  
+- Device sensor fusion and GPS physics validation  
+- Real‑time ring detection and network‑context analysis  
+- Trust‑score computation and ML‑driven anomaly detection  
+- Privacy‑preserving sensor data handling and consent workflows  
+
+**👉 [View Complete Adversarial Defense & Anti‑Spoofing Strategy Documentation](`Adversarial_Defense_&_Anti_Spoofing_Strategy.md`)** 
+
+---
+
 ## 🏗️ Payment & Policy Architecture
 
 For comprehensive technical details about our production-ready payment and insurance system, including:
