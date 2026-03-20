@@ -149,11 +149,10 @@ Real-World Data → AI Processing → Risk Detection → Instant Decision Suppor
 For comprehensive technical details about our enterprise-grade backend architecture, including:
 
 - **Data Flow Diagrams** with zero-trust security
-- **Military-Grade Fraud Detection** (99.7% accuracy)
+- **Military-Grade Fraud Detection** (High accuracy)
 - **Smart Payout Engine** with actuarial calculations
-- **Real-Time Risk Scoring** with 127 ML features
+- **Real-Time Risk Scoring** with ML features
 - **Production Performance Metrics** and scalability specs
-- **Security & Compliance** certifications
 
 **👉 [View Complete Backend Architecture Documentation](BACKEND_ARCHITECTURE.md)**
 
