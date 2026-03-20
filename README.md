@@ -28,23 +28,36 @@ QuickClaim is your digital guardian angel - an AI-powered insurance platform tha
 ### The Multi-App Ecosystem
 ```
 
-WORKER APP (React + Capacitor)
-↕ Real-time data exchange
+flowchart TD
 
-ADMIN DASHBOARD (React)
-↕ Management interface
+    A[📱 Worker App<br/>(React + Capacitor)]
+    B[🖥️ Admin Dashboard<br/>(React)]
+    C[🔧 API Server<br/>(Node.js + Express)]
+    D[🤖 ML Service<br/>(Python + FastAPI)]
+    E[🗄️ PostgreSQL DB<br/>(Supabase)]
+    F[💬 Chatbot Service<br/>(AI Assistant)]
 
-API SERVER (Node.js + Express)
-↕ Business logic hub
+    %% User interactions
+    A <--> C
+    B <--> C
 
-ML SERVICE (Python + FastAPI)
-↕ Intelligence engine
+    %% Core backend flow
+    C <--> E
+    C <--> D
 
-POSTGRESQL (Supabase)
-↕ Data persistence
+    %% AI chatbot integration
+    C <--> F
 
-CHATBOT 
-↕ User assistance
+    %% ML + Data flow
+    D <--> E
+
+    %% Optional labels for clarity
+    A -- "User Data, Location, Activity" --> C
+    C -- "Processed Requests" --> D
+    D -- "Risk Scores" --> C
+    C -- "Store & Retrieve" --> E
+    C -- "Context & Queries" --> F
+    F -- "AI Responses" --> A
 
 ---
 ```
