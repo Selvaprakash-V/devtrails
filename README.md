@@ -27,6 +27,10 @@ QuickClaim is your digital guardian angel - an AI-powered insurance platform tha
 
 ### The Multi-App Ecosystem
 
+## 🏗️ System Architecture
+
+Below is the high-level architecture of QuickClaim:
+
 ```mermaid
 flowchart TD
 
@@ -49,11 +53,9 @@ flowchart TD
     A -->|User Data, Location| C
     C -->|Risk Processing| D
     D -->|Risk Score| C
-    C -->|Store & Retrieve Data| E
+    C -->|Store and Retrieve Data| E
     C -->|AI Context| F
     F -->|User Assistance| A
-
----
 ```
 > A system designed not just to process claims,  
 > but to eliminate the need for claiming at all.
