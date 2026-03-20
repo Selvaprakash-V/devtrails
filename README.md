@@ -51,16 +51,8 @@ CHATBOT (Groq AI)
 > A system designed not just to process claims,  
 > but to eliminate the need for claiming at all.
 
-```
-devtrails/
-├── apps/
-│   ├── worker-app/          # Gig worker mobile/web app
-│   └── admin-dashboard/     # Admin panel
-├── services/
-│   └── api-server/          # Node.js backend
-├── ml/                      # ML microservice (FastAPI)
-└── docker-compose.yml
-```
+
+
 
 ## 🚀 Quick Start
 
