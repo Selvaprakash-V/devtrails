@@ -1,8 +1,7 @@
 # 💳 QuickClaim Payment & Policy Architecture  
 ### Production-Ready Solution
 
-- https://razorpay.com  
-- https://quickclaim.com/policies  
+- https://razorpay.com    
 - https://irdai.gov.in  
 
 Enterprise-grade payment processing and insurance policy management system.
