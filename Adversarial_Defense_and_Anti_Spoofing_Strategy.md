@@ -330,3 +330,10 @@ When 500 fraudsters coordinate an attack, they create 500 data points that expos
 
 **That’s the QuickClaim guarantee:**  
 **Authentic behavior is rewarded, coordinated deception is destroyed.**
+
+
+---
+
+**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](../README.md).**
+
+---
