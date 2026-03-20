@@ -371,8 +371,8 @@ R -->|No| T[Reject Claim]
 
 QuickClaim’s adversarial defense system transforms GPS spoofing from a profitable attack into an expensive failure. By fusing device sensors, network context, behavioral analysis, and ring detection, we’ve created a defense that’s:
 
-- **99.2% Accurate** at detecting coordinated fraud rings.
-- **<1% False Positive Rate** for legitimate workers.
+- **Accurate** at detecting coordinated fraud rings.
+- **Low False Positive Rate** for legitimate workers.
 - **Economically Devastating** for fraudsters (ROI: **‑400%**).
 - **Operationally Complex** to circumvent at scale.
 - **Continuously Evolving** to stay ahead of new threats.
@@ -389,6 +389,6 @@ When 500 fraudsters coordinate an attack, they create 500 data points that expos
 
 ---
 
-**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](../README.md).**
+**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](./README.md).**
 
 ---
