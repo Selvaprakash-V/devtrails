@@ -312,26 +312,24 @@ Each worker gets a real‑time **Trust Score (0–100)** based on:
 
 ---
 
-## 🧠 Fraud Detection Flow (QuickClaim Defense System)
-
 ```mermaid
 flowchart TD
 
 A[Claim Triggered] --> B[Collect Signals]
 
 B --> C1[GPS Data]
-B --> C2[Device Sensors<br/>(Accelerometer, Gyroscope, Steps)]
-B --> C3[Network Context<br/>(IP, Cell Tower, WiFi)]
+B --> C2[Device Sensors - Accelerometer, Gyroscope, Steps]
+B --> C3[Network Context - IP, Cell Tower, WiFi]
 B --> C4[Behavioral History]
 B --> C5[Environmental Data]
 
-C1 --> D[Multi-Layer Validation]
+C1 --> D[Multi Layer Validation]
 C2 --> D
 C3 --> D
 C4 --> D
 C5 --> D
 
-D --> E1[Sensor-GPS Correlation Check]
+D --> E1[Sensor GPS Correlation]
 D --> E2[Physics Validation]
 D --> E3[Network Alignment]
 D --> E4[Behavior Consistency]
@@ -343,19 +341,19 @@ E4 --> F
 
 F --> G{Trust Score Range}
 
-G -->|0–40| H[Low Risk<br/>Instant Payout ✅]
-G -->|41–70| I[Medium Risk<br/>Soft Verification ⏳]
-G -->|71–90| J[High Risk<br/>Multi-Step Verification ⚠️]
-G -->|91–100| K[Critical Risk<br/>Hold + Manual Review 🚨]
+G -->|0-40| H[Low Risk - Instant Payout]
+G -->|41-70| I[Medium Risk - Soft Verification]
+G -->|71-90| J[High Risk - Multi Step Verification]
+G -->|91-100| K[Critical Risk - Hold and Review]
 
 F --> L[Cluster Analysis]
 
-L --> M{Fraud Ring Detected?}
+L --> M{Fraud Ring Detected}
 
-M -->|Yes| N[Flag All Accounts<br/>Block Payouts 🚫]
+M -->|Yes| N[Flag Accounts and Block Payouts]
 M -->|No| G
 
-N --> O[Human Review + Investigation]
+N --> O[Human Review]
 O --> P[Final Decision]
 
 J --> Q[User Verification Inputs]
@@ -363,11 +361,10 @@ K --> Q
 
 Q --> P
 
-P --> R{Verified Legit?}
+P --> R{Verified Legit}
 
-R -->|Yes| S[Release Payout 💰]
-R -->|No| T[Reject Claim ❌]
-
+R -->|Yes| S[Release Payout]
+R -->|No| T[Reject Claim]
 ```
 
 ## Conclusion: The Unbreachable Defense
