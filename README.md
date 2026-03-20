@@ -21,7 +21,7 @@ QuickClaim is your digital guardian angel - an AI-powered insurance platform tha
 - Prevents fraud with GPS intelligence  
 - Learns from you with personalized AI assistance  
 
----
+```
 
 ## The Architecture: A Symphony of Modern Tech
 
@@ -48,7 +48,7 @@ CHATBOT (Groq AI)
 ↕ User assistance
 
 ---
-
+```
 > A system designed not just to process claims,  
 > but to eliminate the need for claiming at all.
 
