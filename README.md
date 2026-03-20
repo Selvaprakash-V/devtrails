@@ -26,38 +26,32 @@ QuickClaim is your digital guardian angel - an AI-powered insurance platform tha
 ## The Architecture: A Symphony of Modern Tech
 
 ### The Multi-App Ecosystem
-```
 
+```mermaid
 flowchart TD
 
-    A[📱 Worker App<br/>(React + Capacitor)]
-    B[🖥️ Admin Dashboard<br/>(React)]
-    C[🔧 API Server<br/>(Node.js + Express)]
-    D[🤖 ML Service<br/>(Python + FastAPI)]
-    E[🗄️ PostgreSQL DB<br/>(Supabase)]
-    F[💬 Chatbot Service<br/>(AI Assistant)]
+    A["📱 Worker App (React + Capacitor)"]
+    B["🖥️ Admin Dashboard (React)"]
+    C["🔧 API Server (Node.js + Express)"]
+    D["🤖 ML Service (Python + FastAPI)"]
+    E["🗄️ PostgreSQL (Supabase)"]
+    F["💬 Chatbot Service"]
 
-    %% User interactions
     A <--> C
     B <--> C
 
-    %% Core backend flow
     C <--> E
     C <--> D
-
-    %% AI chatbot integration
     C <--> F
 
-    %% ML + Data flow
     D <--> E
 
-    %% Optional labels for clarity
-    A -- "User Data, Location, Activity" --> C
-    C -- "Processed Requests" --> D
-    D -- "Risk Scores" --> C
-    C -- "Store & Retrieve" --> E
-    C -- "Context & Queries" --> F
-    F -- "AI Responses" --> A
+    A -->|User Data, Location| C
+    C -->|Risk Processing| D
+    D -->|Risk Score| C
+    C -->|Store & Retrieve Data| E
+    C -->|AI Context| F
+    F -->|User Assistance| A
 
 ---
 ```
