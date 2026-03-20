@@ -1,9 +1,5 @@
 # QuickClaim Backend Architecture - Enterprise Level
 
-[![Backend Status](https://img.shields.io/badge/Backend-Production%20Ready-green.svg)](https://api.quickclaim.com/health)
-[![API Latency](https://img.shields.io/badge/API%20Latency-89ms%20P95-blue.svg)](https://metrics.quickclaim.com)
-[![Fraud Detection](https://img.shields.io/badge/Fraud%20Detection-99.7%25-red.svg)](https://ml.quickclaim.com)
-[![Uptime](https://img.shields.io/badge/Uptime-99.99%25-brightgreen.svg)](https://status.quickclaim.com)
 
 > **Military-grade backend architecture powering an advanced parametric insurance platform**
 
