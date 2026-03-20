@@ -156,6 +156,6 @@ high transaction volumes while maintaining profitability and regulatory complian
 
 ---
 
-**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](../README.md).**
+**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](./README.md).**
 
 ---
