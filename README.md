@@ -168,7 +168,7 @@ For in‑depth technical details about our adversarial‑resilient defense stack
 - Trust‑score computation and ML‑driven anomaly detection  
 - Privacy‑preserving sensor data handling and consent workflows  
 
-**👉 [View Complete Adversarial Defense & Anti‑Spoofing Strategy Documentation](`Adversarial_Defense_and_Anti_Spoofing_Strategy.md`)** 
+**👉 [View Complete Adversarial Defense & Anti‑Spoofing Strategy Documentation](Adversarial_Defense_and_Anti_Spoofing_Strategy.md)** 
 
 ---
 
