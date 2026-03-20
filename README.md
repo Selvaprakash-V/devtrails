@@ -21,13 +21,12 @@ QuickClaim is your digital guardian angel - an AI-powered insurance platform tha
 - Prevents fraud with GPS intelligence  
 - Learns from you with personalized AI assistance  
 
-```
+
 
 ## The Architecture: A Symphony of Modern Tech
 
 ### The Multi-App Ecosystem
-
-## 📁 Project Structure
+```
 
 WORKER APP (React + Capacitor)
 ↕ Real-time data exchange
