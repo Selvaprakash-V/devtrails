@@ -412,6 +412,9 @@ This enterprise-grade backend architecture makes this app production-ready for m
 
 ---
 
+**👉 To view other sections and the overall project structure, return to the main project overview: [README.md](../README.md).**
+
+---
 <div align="center">
 
 **Built for Scale • Designed for Security • Optimized for Performance**
