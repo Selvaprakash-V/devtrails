@@ -57,6 +57,7 @@ flowchart TD
     C -->|AI Context| F
     F -->|User Assistance| A
 ```
+
 > A system designed not just to process claims,  
 > but to eliminate the need for claiming at all.
 
