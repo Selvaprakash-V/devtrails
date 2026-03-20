@@ -43,7 +43,7 @@ ML SERVICE (Python + FastAPI)
 POSTGRESQL (Supabase)
 ↕ Data persistence
 
-CHATBOT (Groq AI)
+CHATBOT 
 ↕ User assistance
 
 ---
