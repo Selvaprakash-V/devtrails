@@ -55,88 +55,92 @@ flowchart TD
 ```
 > A system designed not just to process claims,  
 > but to eliminate the need for claiming at all.
+# Worker App Experience
 
-## 🚀 Quick Start
+[ Onboarding ] → [ Verification ] → [ Permissions ] → [ Dashboard ]
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- MongoDB
+---
 
-### 1. Setup API Server
+![User Flow Overview](https://img.shields.io/badge/Section-User%20Flow%20Overview-blue)
 
-```bash
-cd services/api-server
-npm install
-cp .env.example .env
-npm run dev
-```
+| Stage            | Description                          | Experience                    |
+|------------------|--------------------------------------|-------------------------------|
+| Onboarding       | 3-step user setup                    | Simple and guided             |
+| OTP Verification | Secure login                         | Fast and seamless             |
+| Permissions      | Location access                      | Transparent and trust-based   |
+| Dashboard        | Real-time insights                   | Actionable and dynamic        |
 
-### 2. Setup ML Service
+---
 
-```bash
-cd ml
-pip install -r requirements.txt
-python api/main.py
-```
+![Onboarding Flow](https://img.shields.io/badge/Section-Onboarding%20Flow-green)
 
-### 3. Setup Worker App
+- Step 1: Personal Details (name, phone)  
+- Step 2: Work Details (platform, city, vehicle)  
+- Step 3: Vehicle Information (type, license)  
 
-```bash
-cd apps/worker-app
-npm install
-npm run dev
-```
+**Features:**
+- Structured input  
+- Smart validation  
+- Minimal friction  
 
-### 4. Setup Admin Dashboard
+---
 
-```bash
-cd apps/admin-dashboard
-npm install
-npm run dev
-```
+![OTP Verification](https://img.shields.io/badge/Section-OTP%20Verification-orange)
 
-## 🔑 Default Credentials
+- 4-digit OTP input with auto-focus  
+- Demo-friendly OTP display  
+- Backend-connected authentication  
 
-**Admin Login:**
-- Username: `admin`
-- Password: `admin123`
+**Flow:**  
+User Input → OTP Entry → Validation → Access Granted  
 
-**Worker OTP:**
-- Any phone number
-- OTP: `1234`
+---
 
-## 🌐 Endpoints
+![Location Permissions](https://img.shields.io/badge/Section-Location%20Permissions-red)
 
-- Worker App: http://localhost:3000
-- Admin Dashboard: http://localhost:3001
-- API Server: http://localhost:5000
-- ML Service: http://localhost:8000
+**Flow:**  
+Explain Need → Request Access → Enable Tracking  
 
-## 📡 API Routes
+- Clear explanation of usage  
+- Smooth permission handling  
+- Enables GPS-based fraud detection  
 
-### Auth
-- POST `/api/auth/login` - Worker login
-- POST `/api/auth/register` - Worker registration
-- POST `/api/auth/admin/login` - Admin login
+---
 
-### Worker
-- GET `/api/worker/profile` - Get profile
-- POST `/api/worker/location` - Update location
-- GET `/api/worker/dashboard` - Get dashboard data
+![Dashboard](https://img.shields.io/badge/Section-Dashboard-purple)
 
-### Claims
-- POST `/api/claims` - Create claim (with fraud check)
-- GET `/api/claims` - Get my claims
-- GET `/api/claims/:id` - Get claim by ID
+### Risk Level
+- Low: Safe conditions  
+- Medium: Moderate risk  
+- High: Unsafe conditions  
 
-### Admin
-- GET `/api/admin/dashboard` - Dashboard stats
-- GET `/api/admin/claims` - All claims
-- PATCH `/api/admin/claims/:id` - Update claim status
-- GET `/api/admin/fraud-alerts` - Fraud alerts
-- PATCH `/api/admin/fraud-alerts/:id/resolve` - Resolve alert
-- GET `/api/admin/workers` - All workers
+### Earnings
+- Expected daily earnings  
+- Protected income  
+- At-risk amount  
+
+### Environmental Data
+- Rainfall and humidity  
+- Temperature and conditions  
+- Air Quality (PM2.5)  
+- Traffic status  
+
+---
+
+![Design Principles](https://img.shields.io/badge/Section-Design%20Principles-lightgrey)
+
+- Clear and readable UI  
+- Real-time updates  
+- Minimal user effort  
+- Responsive across devices  
+- Designed for future dark mode  
+
+---
+
+![System Logic](https://img.shields.io/badge/Section-System%20Logic-black)
+
+Real-World Data → AI Processing → Risk Detection → Instant Decision Support
+
 
 ## 🤖 ML Models
 
