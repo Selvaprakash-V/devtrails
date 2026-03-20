@@ -154,6 +154,6 @@ For comprehensive technical details about our enterprise-grade backend architect
 - **Real-Time Risk Scoring** with ML features
 - **Production Performance Metrics** and scalability specs
 
-**👉 [View Complete Backend Architecture Documentation](BACKEND_IMPLEMENTATION.md)**
+**👉 [View Complete Backend Architecture Documentation](BACKEND_ARCHITECTURE.md)**
 
 ---
